@@ -7,7 +7,7 @@ function App() {
     const localizer = momentLocalizer(moment);
 
     return (
-        <Calendar localizer={localizer}/>
+        <Calendar localizer={localizer} view="week" views={["week"]}/>
     );
 }
 
