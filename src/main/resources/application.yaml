@@ -1,0 +1,3 @@
+jira:
+  base-url: ${JIRA_BASE_URL}
+  token: ${JIRA_USER_TOKEN}
