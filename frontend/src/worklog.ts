@@ -3,7 +3,7 @@ export type Worklog = {
     worklogId: string,
     issueKey: string,
     issueSummary: string,
-    started: string,
-    timeSpentSeconds: number,
+    start: string,
+    end: string,
     worklogComment: string
 }

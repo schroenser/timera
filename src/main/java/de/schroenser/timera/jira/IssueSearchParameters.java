@@ -1,14 +1,17 @@
 package de.schroenser.timera.jira;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public record IssueSearchParameters(String jql, List<String> fields, int startAt, int maxResults)
 {
-    public IssueSearchParameters(int startAt)
+    private static final DateTimeFormatter JQL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    public IssueSearchParameters(OffsetDateTime start, int startAt)
     {
-        this("updatedDate >= startOfWeek('+1d') and timespent > 0 order by updatedDate asc",
-            List.of("summary", "updated"),
-            startAt,
-            1000);
+        this("updatedDate >= '" +
+            JQL_DATE_TIME_FORMATTER.format(start) +
+            "' and timespent > 0 order by updatedDate asc", List.of("summary", "updated"), startAt, 1000);
     }
 }

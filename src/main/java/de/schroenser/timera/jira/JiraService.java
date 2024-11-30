@@ -1,5 +1,6 @@
 package de.schroenser.timera.jira;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -18,9 +19,10 @@ public class JiraService
 {
     private final RestClient restClient;
 
-    public Stream<JiraIssue> streamIssues()
+    public Stream<JiraIssue> streamIssues(OffsetDateTime start)
     {
-        Function<Integer, IssueResponse> pageProvider = startAt -> getIssueResponse(new IssueSearchParameters(startAt));
+        Function<Integer, IssueResponse> pageProvider = startAt -> getIssueResponse(new IssueSearchParameters(start,
+            startAt));
         return StreamSupport.stream(new PagedResponseSpliterator<>(pageProvider), false);
     }
 
@@ -36,7 +38,7 @@ public class JiraService
     }
 
     @Cacheable("worklogs")
-    public List<JiraWorklog> listWorklogs(String issueId, String updated)
+    public List<JiraWorklog> listWorklogs(String issueId, OffsetDateTime updated)
     {
         return getWorklogResponse(issueId).worklogs();
     }

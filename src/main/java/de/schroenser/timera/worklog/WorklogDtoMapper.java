@@ -16,8 +16,8 @@ public class WorklogDtoMapper
             worklog.worklogId(),
             worklog.issueKey(),
             worklog.issueSummary(),
-            worklog.started(),
-            worklog.timeSpentSeconds(),
+            worklog.start(),
+            worklog.end(),
             worklog.worklogComment());
     }
 }

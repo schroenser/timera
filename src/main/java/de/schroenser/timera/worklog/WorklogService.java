@@ -1,5 +1,6 @@
 package de.schroenser.timera.worklog;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -16,18 +17,22 @@ public class WorklogService
 {
     private final JiraService jiraService;
 
-    public List<Worklog> list()
+    public List<Worklog> list(OffsetDateTime start, OffsetDateTime end)
     {
         String currentUserName = jiraService.getCurrentUser()
             .name();
 
-        return jiraService.streamIssues()
+        return jiraService.streamIssues(start)
             .flatMap(jiraIssue -> jiraService.listWorklogs(jiraIssue.id(),
                     jiraIssue.fields()
                         .updated())
                 .stream()
                 .filter(jiraWorklog -> isFrom(jiraWorklog, currentUserName))
                 .map(jiraWorklog -> createWorklog(jiraIssue, jiraWorklog)))
+            .filter(worklog -> worklog.end()
+                .isAfter(start) &&
+                worklog.start()
+                    .isBefore(end))
             .toList();
     }
 
@@ -49,7 +54,8 @@ public class WorklogService
             jiraIssue.fields()
                 .summary(),
             jiraWorklog.started(),
-            jiraWorklog.timeSpentSeconds(),
+            jiraWorklog.started()
+                .plusSeconds(jiraWorklog.timeSpentSeconds()),
             jiraWorklog.comment());
     }
 }
