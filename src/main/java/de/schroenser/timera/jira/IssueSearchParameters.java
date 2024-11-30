@@ -7,7 +7,7 @@ public record IssueSearchParameters(String jql, List<String> fields, int startAt
     public IssueSearchParameters(int startAt)
     {
         this("updatedDate >= startOfWeek('+1d') and timespent > 0 order by updatedDate asc",
-            List.of("summary"),
+            List.of("summary", "updated"),
             startAt,
             1000);
     }

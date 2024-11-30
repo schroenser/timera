@@ -1,5 +1,5 @@
 package de.schroenser.timera.jira;
 
-public record JiraFields(String summary)
+public record JiraFields(String summary, String updated)
 {
 }

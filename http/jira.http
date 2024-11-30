@@ -12,7 +12,8 @@ Content-Type: application/json
 {
     "jql": "updatedDate >= startOfWeek('+1d') and timespent > 0 order by updatedDate asc",
     "fields": [
-        "summary"
+        "summary",
+        "updated"
     ],
     "startAt": 0,
     "maxResults": 1000
