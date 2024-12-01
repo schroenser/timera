@@ -1,14 +1,16 @@
-import "./App.css";
 import {useCallback, useEffect, useState} from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {Calendar, Event, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/de";
 import {Worklog} from "./worklog";
+import "./App.css";
 
 function App() {
     moment.locale("de");
     const localizer = momentLocalizer(moment);
+
+    const max = new Date(1970, 0, 1, 7, 0, 0);
 
     let [start, setStart] = useState<moment.Moment>(moment().startOf("week"));
     let [end, setEnd] = useState<moment.Moment>(moment().endOf("week"));
@@ -37,7 +39,7 @@ function App() {
     }, [setStart, setEnd]);
 
     return (
-        <Calendar localizer={localizer} view="week" views={["week"]} events={events} onNavigate={onNavigate}/>
+        <Calendar localizer={localizer} views={["week"]} view="week" scrollToTime={max} events={events} onNavigate={onNavigate}/>
     );
 }
 
