@@ -27,7 +27,7 @@ function App() {
             return {
                 start: moment(worklog.start).toDate(),
                 end: moment(worklog.end).toDate(),
-                title: worklog.issueSummary
+                title: worklog.issueKey + ": " + worklog.issueSummary
             };
         }))
         .then(events => setEvents(events));
