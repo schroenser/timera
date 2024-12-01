@@ -53,7 +53,7 @@ function App() {
     }, [setStart, setEnd]);
 
     return (
-        <Calendar localizer={localizer} views={["week"]} view="week" scrollToTime={max} step={15} timeslots={4} events={events} eventPropGetter={eventPropGetter} onNavigate={onNavigate}/>
+        <Calendar localizer={localizer} views={["week"]} view="week" scrollToTime={max} step={15} timeslots={4} dayLayoutAlgorithm={"no-overlap"} events={events} eventPropGetter={eventPropGetter} onNavigate={onNavigate}/>
     );
 }
 
