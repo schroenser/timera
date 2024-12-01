@@ -5,6 +5,7 @@ import moment from "moment";
 import "moment/locale/de";
 import {Worklog} from "./worklog";
 import "./App.css";
+import {eventColors} from "./eventColors";
 
 function App() {
     moment.locale("de");
@@ -33,13 +34,26 @@ function App() {
         .then(events => setEvents(events));
     }, [start, end, setEvents]);
 
+    const eventPropGetter = useCallback((event: Event) => {
+        const {
+            color,
+            backgroundColor
+        } = eventColors(event);
+        return {
+            style: {
+                color,
+                backgroundColor
+            }
+        };
+    }, []);
+
     const onNavigate = useCallback((newDate: Date) => {
         setStart(moment(newDate).startOf("week"));
         setEnd(moment(newDate).endOf("week"));
     }, [setStart, setEnd]);
 
     return (
-        <Calendar localizer={localizer} views={["week"]} view="week" scrollToTime={max} events={events} onNavigate={onNavigate}/>
+        <Calendar localizer={localizer} views={["week"]} view="week" scrollToTime={max} events={events} eventPropGetter={eventPropGetter} onNavigate={onNavigate}/>
     );
 }
 
