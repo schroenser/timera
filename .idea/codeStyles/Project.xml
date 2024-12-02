@@ -273,7 +273,7 @@
       <option name="PRIMARY_KEY_NAME_TEMPLATE" value="{table}_{columns}_pk" />
     </HSQLCodeStyleSettings>
     <HTMLCodeStyleSettings>
-      <option name="HTML_ATTRIBUTE_WRAP" value="0" />
+      <option name="HTML_ATTRIBUTE_WRAP" value="4" />
       <option name="HTML_TEXT_WRAP" value="0" />
       <option name="HTML_KEEP_LINE_BREAKS" value="false" />
       <option name="HTML_KEEP_BLANK_LINES" value="1" />
