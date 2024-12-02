@@ -7,7 +7,7 @@ import {Worklog} from "./worklog";
 import "./App.css";
 import {eventColors} from "./eventColors";
 
-async function getEvents(start: moment.Moment, end: moment.Moment): Promise<Event[]> {
+async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Worklog[]> {
     const response = await fetch("/api/worklog?" + new URLSearchParams({
         start: start.toISOString(),
         end: end.toISOString()
@@ -16,15 +16,16 @@ async function getEvents(start: moment.Moment, end: moment.Moment): Promise<Even
             "Accept": "application/json; charset=UTF-8"
         })
     });
-    const worklogs = await response.json() as Worklog[];
-    return worklogs.map(worklog => {
-        return {
-            start: moment(worklog.start).toDate(),
-            end: moment(worklog.end).toDate(),
-            title: worklog.issueKey + ": " + worklog.issueSummary,
-            resource: worklog
-        };
-    });
+    return await response.json() as Worklog[];
+}
+
+function createEvent(worklog: Worklog): Event {
+    return {
+        start: moment(worklog.start).toDate(),
+        end: moment(worklog.end).toDate(),
+        title: worklog.issueKey + ": " + worklog.issueSummary,
+        resource: worklog
+    };
 }
 
 function App() {
@@ -69,7 +70,8 @@ function App() {
     const [date, setDate] = useState<Date>(new Date());
 
     useEffect(() => {
-        getEvents(moment(date).startOf("week"), moment(date).endOf("week"))
+        getWorklogs(moment(date).startOf("week"), moment(date).endOf("week"))
+        .then(worklogs => worklogs.map(createEvent))
         .then(setEvents);
     }, [date, setEvents]);
 
