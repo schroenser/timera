@@ -20,4 +20,20 @@ public class WorklogDtoMapper
             worklog.end(),
             worklog.worklogComment());
     }
+
+    public Worklog toPojo(WorklogDto worklogDto)
+    {
+        if (worklogDto == null)
+        {
+            return null;
+        }
+
+        return new Worklog(worklogDto.issueId(),
+            worklogDto.worklogId(),
+            worklogDto.issueKey(),
+            worklogDto.issueSummary(),
+            worklogDto.start(),
+            worklogDto.end(),
+            worklogDto.worklogComment());
+    }
 }

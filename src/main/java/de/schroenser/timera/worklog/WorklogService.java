@@ -1,6 +1,7 @@
 package de.schroenser.timera.worklog;
 
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,27 @@ public class WorklogService
             jiraWorklog.started()
                 .plusSeconds(jiraWorklog.timeSpentSeconds()),
             jiraWorklog.comment());
+    }
+
+    public Worklog update(Worklog worklog)
+    {
+        var jiraWorklog = new JiraWorklog(null,
+            worklog.start(),
+            (int) worklog.start()
+                .until(worklog.end(), ChronoUnit.SECONDS),
+            worklog.worklogComment(),
+            null,
+            null);
+
+        JiraWorklog jiraWorklogResult = jiraService.updateWorklog(worklog.issueId(), worklog.worklogId(), jiraWorklog);
+
+        return new Worklog(worklog.issueId(),
+            jiraWorklogResult.id(),
+            worklog.issueKey(),
+            worklog.issueSummary(),
+            jiraWorklogResult.started(),
+            jiraWorklogResult.started()
+                .plusSeconds(jiraWorklogResult.timeSpentSeconds()),
+            jiraWorklogResult.comment());
     }
 }

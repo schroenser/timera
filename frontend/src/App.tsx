@@ -1,6 +1,8 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, Views} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import moment from "moment";
 import "moment/locale/de";
 import {Worklog} from "./worklog";
@@ -19,6 +21,18 @@ async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Wo
     return await response.json() as Worklog[];
 }
 
+async function updateWorklog(worklog: Worklog): Promise<Worklog> {
+    const response = await fetch(`/api/worklog/${worklog.worklogId}`, {
+        method: "PUT",
+        body: JSON.stringify(worklog),
+        headers: new Headers({
+            "Content-Type": "application/json; charset=UTF-8",
+            "Accept": "application/json; charset=UTF-8"
+        })
+    });
+    return await response.json() as Worklog;
+}
+
 function createEvent(worklog: Worklog): Event {
     return {
         start: moment(worklog.start).toDate(),
@@ -29,6 +43,8 @@ function createEvent(worklog: Worklog): Event {
 }
 
 function App() {
+    const DragAndDropCalendar = withDragAndDrop(Calendar);
+
     moment.locale("de");
     const localizer = momentLocalizer(moment);
 
@@ -75,8 +91,31 @@ function App() {
         .then(setEvents);
     }, [date, setEvents]);
 
+    const onEventChange = useCallback(({
+        event,
+        start,
+        end
+    }: EventInteractionArgs<Event>) => {
+        const worklog = event.resource as Worklog;
+        const modifiedWorklog = {
+            ...worklog,
+            start: start,
+            end: end
+        } as Worklog;
+        updateWorklog(modifiedWorklog)
+        .then(createEvent)
+        .then(event => {
+            setEvents((prev) => {
+                const filtered = prev.filter((ev) => ev.resource.worklogId !== event.resource.worklogId);
+                return [
+                    ...filtered, event
+                ];
+            });
+        });
+    }, [setEvents]);
+
     return (
-        <Calendar localizer={localizer}
+        <DragAndDropCalendar localizer={localizer}
             views={views}
             defaultView={defaultView}
             scrollToTime={scrollToTime}
@@ -86,7 +125,9 @@ function App() {
             events={events}
             eventPropGetter={eventPropGetter}
             date={date}
-            onNavigate={setDate}/>
+            onNavigate={setDate}
+            onEventDrop={onEventChange}
+            onEventResize={onEventChange}/>
     );
 }
 

@@ -60,4 +60,15 @@ public class JiraService
             .retrieve()
             .body(JiraCurrentUser.class);
     }
+
+    public JiraWorklog updateWorklog(String issueId, String worklogId, JiraWorklog worklog)
+    {
+        return restClient.put()
+            .uri("rest/api/2/issue/{issueId}/worklog/{worklogId}?adjustEstimate=leave", issueId, worklogId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(worklog)
+            .retrieve()
+            .body(JiraWorklog.class);
+    }
 }
