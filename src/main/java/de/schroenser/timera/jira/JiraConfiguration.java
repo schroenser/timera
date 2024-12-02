@@ -25,16 +25,21 @@ class JiraConfiguration
 
     @Bean
     public RestClient restClient(
-        @Value("${jira.base-url}") String baseUrl, @Value("${jira.token}") String token, ObjectMapper objectMapper)
+        JiraProperties jiraProperties,
+        ObjectMapper objectMapper)
     {
-        return RestClient.builder()
-            .baseUrl(baseUrl)
+        var builder = RestClient.builder()
+            .baseUrl(jiraProperties.baseUrl())
             .messageConverters(c -> {
                 c.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
                 c.add(new MappingJackson2HttpMessageConverter(objectMapper));
             })
             .defaultHeader("User-Agent", "Timera/1.0 (Sven Haberer - DDS)")
-            .defaultHeader("Authorization", "Bearer " + token)
-            .build();
+            .defaultHeader("Authorization", "Bearer " + jiraProperties.token());
+        if (jiraProperties.logRequests())
+        {
+            builder = builder.requestInterceptor(new LoggingClientHttpRequestInterceptor());
+        }
+        return builder.build();
     }
 }
