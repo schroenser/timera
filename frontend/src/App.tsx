@@ -34,10 +34,18 @@ async function updateWorklog(worklog: Worklog): Promise<Worklog> {
 }
 
 function createEvent(worklog: Worklog): Event {
+    let title = "";
+    if (worklog.worklogComment) {
+        title = worklog.worklogComment + " (";
+    }
+    title = title + worklog.issueKey + ": " + worklog.issueSummary;
+    if (worklog.worklogComment) {
+        title = title + ")";
+    }
     return {
         start: moment(worklog.start).toDate(),
         end: moment(worklog.end).toDate(),
-        title: worklog.issueKey + ": " + worklog.issueSummary,
+        title: title,
         resource: worklog
     };
 }
