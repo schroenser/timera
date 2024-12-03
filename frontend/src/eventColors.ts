@@ -36,6 +36,6 @@ const toHsl = (string: string) => {
 export function eventColors(event: Event) {
     return {
         color: "white",
-        backgroundColor: toHsl(event.title as string)
+        backgroundColor: toHsl(event.resource.issueKey as string)
     };
 }
