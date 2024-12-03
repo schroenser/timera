@@ -66,9 +66,9 @@ function App() {
     } = useMemo(() => (
         {
             views: {
-                week: true
+                work_week: true
             },
-            defaultView: Views.WEEK,
+            defaultView: Views.WORK_WEEK,
             scrollToTime: new Date(1970, 0, 1, 7, 0, 0),
             step: 15,
             timeslots: 4,
