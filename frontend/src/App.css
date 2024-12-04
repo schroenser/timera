@@ -5,3 +5,13 @@
 .rbc-allday-cell {
     display: none;
 }
+
+.rbc-event {
+    container-type: size;
+}
+
+@container (max-height: 60px) {
+    .rbc-event .rbc-event-label {
+        display: none;
+    }
+}
