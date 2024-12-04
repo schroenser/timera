@@ -52,6 +52,7 @@ public class JiraService
             .body(WorklogResponse.class);
     }
 
+    @Cacheable("currentUser")
     public JiraCurrentUser getCurrentUser()
     {
         return restClient.get()
