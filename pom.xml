@@ -14,8 +14,19 @@
     <artifactId>timera</artifactId>
     <version>0.1-SNAPSHOT</version>
 
+    <prerequisites>
+        <!--
+            This Maven version is used for versions:display-plugin-updates only. Maven does not check this value during
+            the build. For that, refer to the maven enforcer plugin configuration.
+
+            See http://jira.codehaus.org/browse/MVERSIONS-272 for more details.
+        -->
+        <maven>${maven.version.minimum}</maven>
+    </prerequisites>
+
     <properties>
         <java.version>21</java.version>
+        <maven.version.minimum>3.6.3</maven.version.minimum>
     </properties>
 
     <dependencies>
@@ -263,6 +274,21 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.18.0</version>
+                    <configuration>
+                        <outputLineWidth>150</outputLineWidth>
+                        <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
+                        <ruleSet>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).*\W(?:beta)\W*.*</version>
+                            </ignoreVersion>
+                        </ruleSet>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
