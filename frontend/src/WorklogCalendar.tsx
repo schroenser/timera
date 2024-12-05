@@ -35,21 +35,21 @@ function WorklogCalendar({
     onWorklogChange
 }: WorklogCalendarProps) {
     const {
-        views,
         defaultView,
-        scrollToTime,
+        views,
         step,
         timeslots,
+        scrollToTime,
         dayLayoutAlgorithm
     } = useMemo(() => (
         {
+            defaultView: Views.WORK_WEEK,
             views: {
                 work_week: true
             },
-            defaultView: Views.WORK_WEEK,
-            scrollToTime: new Date(1970, 0, 1, 7, 0, 0),
             step: 15,
             timeslots: 4,
+            scrollToTime: new Date(1970, 0, 1, 7, 0, 0),
             dayLayoutAlgorithm: "no-overlap" as DayLayoutAlgorithm
         }
     ), []);
