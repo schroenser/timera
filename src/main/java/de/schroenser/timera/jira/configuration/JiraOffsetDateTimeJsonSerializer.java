@@ -1,4 +1,4 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.configuration;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;

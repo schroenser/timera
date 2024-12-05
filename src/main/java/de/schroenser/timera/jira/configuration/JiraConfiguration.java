@@ -1,6 +1,5 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +23,7 @@ class JiraConfiguration
     }
 
     @Bean
-    public RestClient restClient(
-        JiraProperties jiraProperties,
-        ObjectMapper objectMapper)
+    public RestClient restClient(JiraProperties jiraProperties, ObjectMapper objectMapper)
     {
         var builder = RestClient.builder()
             .baseUrl(jiraProperties.baseUrl())
