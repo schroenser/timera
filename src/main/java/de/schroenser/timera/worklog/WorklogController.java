@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class WorklogController
 {
-    private final WorklogService service;
+    private final WorklogListService listService;
+    private final WorklogUpdateService updateService;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<Worklog> list(@RequestParam OffsetDateTime start, @RequestParam OffsetDateTime end)
     {
-        return service.list(start, end);
+        return listService.list(start, end);
     }
 
     @PutMapping(value = "{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
@@ -37,6 +38,6 @@ public class WorklogController
             return ResponseEntity.badRequest()
                 .build();
         }
-        return ResponseEntity.ok(service.update(worklog));
+        return ResponseEntity.ok(updateService.update(worklog));
     }
 }
