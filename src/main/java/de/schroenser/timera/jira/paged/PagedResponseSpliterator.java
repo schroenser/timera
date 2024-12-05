@@ -1,4 +1,4 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.paged;
 
 import java.util.List;
 import java.util.Spliterator;

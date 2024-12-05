@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import de.schroenser.timera.jira.paged.PagedResponseSpliterator;
+
 @Service
 @RequiredArgsConstructor
 public class JiraService
