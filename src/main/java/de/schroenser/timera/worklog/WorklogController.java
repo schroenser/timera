@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.schroenser.timera.util.Mappers;
-
 @RestController
 @RequestMapping("api/worklog")
 @RequiredArgsConstructor
@@ -26,19 +24,19 @@ public class WorklogController
     private final WorklogService service;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public List<WorklogDto> list(@RequestParam OffsetDateTime start, @RequestParam OffsetDateTime end)
+    public List<Worklog> list(@RequestParam OffsetDateTime start, @RequestParam OffsetDateTime end)
     {
-        return Mappers.map(service.list(start, end), WorklogDtoMapper::fromPojo);
+        return service.list(start, end);
     }
 
     @PutMapping(value = "{id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<WorklogDto> update(@PathVariable String id, @RequestBody WorklogDto dto)
+    public ResponseEntity<Worklog> update(@PathVariable String id, @RequestBody Worklog worklog)
     {
-        if (!id.equals(dto.worklogId()))
+        if (!id.equals(worklog.worklogId()))
         {
             return ResponseEntity.badRequest()
                 .build();
         }
-        return ResponseEntity.ok(WorklogDtoMapper.fromPojo(service.update(WorklogDtoMapper.toPojo(dto))));
+        return ResponseEntity.ok(service.update(worklog));
     }
 }
