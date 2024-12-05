@@ -3,6 +3,10 @@ import moment from "moment";
 import Worklog from "./Worklog";
 import WorklogCalendar from "./WorklogCalendar";
 import "./App.css";
+import {Modal, Text, TextInput} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
+import {SlotInfo} from "react-big-calendar";
+import IssuePicker from "./IssuePicker";
 
 async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Worklog[]> {
     const response = await fetch("/api/worklog?" + new URLSearchParams({
@@ -38,7 +42,7 @@ function App() {
 
     useEffect(() => {
         onNavigate(moment());
-    }, []);
+    }, [onNavigate]);
 
     const onWorklogChange = useCallback((worklog: Worklog) => {
         updateWorklog(worklog)
@@ -52,8 +56,37 @@ function App() {
         });
     }, [setWorklogs]);
 
+    const [selectedWorklog, setSelectedWorklog] = useState<Worklog>();
+    const [
+        createDialogOpened, {
+            open: openCreateDialog,
+            close: closeCreateDialog
+        }
+    ] = useDisclosure(false);
+
+    const onSelectSlot = useCallback((slotInfo: SlotInfo) => {
+        setSelectedWorklog({
+            start: moment(slotInfo.start).toISOString(),
+            end: moment(slotInfo.end).toISOString()
+        } as Worklog);
+        openCreateDialog();
+    }, [setSelectedWorklog, openCreateDialog]);
+
+    const onIssuePicked = useCallback((issueKey: string) => console.log(issueKey), []);
+
     return (
-        <WorklogCalendar worklogs={worklogs} onNavigate={onNavigate} onWorklogChange={onWorklogChange}/>
+        <>
+            <WorklogCalendar worklogs={worklogs}
+                onNavigate={onNavigate}
+                onWorklogChange={onWorklogChange}
+                onSelectSlot={onSelectSlot}/>
+            <Modal opened={createDialogOpened} onClose={closeCreateDialog} title="Create worklog" centered>
+                <Text>Start: {moment(selectedWorklog?.start).format("DD.MM.YYYY HH:mm")}</Text>
+                <Text>Ende: {moment(selectedWorklog?.end).format("DD.MM.YYYY HH:mm")}</Text>
+                <IssuePicker onIssuePicked={onIssuePicked}/>
+                <TextInput label="Worklog comment"/>
+            </Modal>
+        </>
     );
 }
 
