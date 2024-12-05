@@ -8,21 +8,23 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import de.schroenser.timera.jira.JiraService;
+import de.schroenser.timera.jira.user.JiraUserService;
+import de.schroenser.timera.jira.JiraWorklog;
 import de.schroenser.timera.jira.issue.JiraIssue;
 import de.schroenser.timera.jira.issue.JiraIssueService;
-import de.schroenser.timera.jira.JiraService;
-import de.schroenser.timera.jira.JiraWorklog;
 
 @Service
 @RequiredArgsConstructor
 public class WorklogService
 {
     private final JiraService jiraService;
+    private final JiraUserService jiraUserService;
     private final JiraIssueService jiraIssueService;
 
     public List<Worklog> list(OffsetDateTime start, OffsetDateTime end)
     {
-        String currentUserName = jiraService.getCurrentUser()
+        String currentUserName = jiraUserService.getCurrentUser()
             .name();
 
         return jiraIssueService.streamIssues(start)

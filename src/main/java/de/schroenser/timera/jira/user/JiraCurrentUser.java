@@ -1,4 +1,4 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.user;
 
 public record JiraCurrentUser(String name)
 {

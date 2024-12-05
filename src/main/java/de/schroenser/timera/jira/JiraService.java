@@ -31,16 +31,6 @@ public class JiraService
             .body(WorklogResponse.class);
     }
 
-    @Cacheable("currentUser")
-    public JiraCurrentUser getCurrentUser()
-    {
-        return restClient.get()
-            .uri("rest/auth/1/session")
-            .accept(MediaType.APPLICATION_JSON)
-            .retrieve()
-            .body(JiraCurrentUser.class);
-    }
-
     public JiraWorklog updateWorklog(String issueId, String worklogId, JiraWorklog worklog)
     {
         return restClient.put()
