@@ -8,19 +8,19 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import de.schroenser.timera.jira.JiraService;
-import de.schroenser.timera.jira.user.JiraUserService;
-import de.schroenser.timera.jira.JiraWorklog;
 import de.schroenser.timera.jira.issue.JiraIssue;
 import de.schroenser.timera.jira.issue.JiraIssueService;
+import de.schroenser.timera.jira.user.JiraUserService;
+import de.schroenser.timera.jira.worklog.JiraWorklog;
+import de.schroenser.timera.jira.worklog.JiraWorklogService;
 
 @Service
 @RequiredArgsConstructor
 public class WorklogService
 {
-    private final JiraService jiraService;
     private final JiraUserService jiraUserService;
     private final JiraIssueService jiraIssueService;
+    private final JiraWorklogService jiraWorklogService;
 
     public List<Worklog> list(OffsetDateTime start, OffsetDateTime end)
     {
@@ -28,7 +28,7 @@ public class WorklogService
             .name();
 
         return jiraIssueService.streamIssues(start)
-            .flatMap(jiraIssue -> jiraService.listWorklogs(jiraIssue.id(),
+            .flatMap(jiraIssue -> jiraWorklogService.listWorklogs(jiraIssue.id(),
                     jiraIssue.fields()
                         .updated())
                 .stream()
@@ -74,7 +74,9 @@ public class WorklogService
             null,
             null);
 
-        JiraWorklog jiraWorklogResult = jiraService.updateWorklog(worklog.issueId(), worklog.worklogId(), jiraWorklog);
+        JiraWorklog jiraWorklogResult = jiraWorklogService.updateWorklog(worklog.issueId(),
+            worklog.worklogId(),
+            jiraWorklog);
 
         return new Worklog(worklog.issueId(),
             jiraWorklogResult.id(),

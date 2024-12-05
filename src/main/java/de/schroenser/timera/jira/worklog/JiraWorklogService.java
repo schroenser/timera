@@ -1,4 +1,4 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.worklog;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClient;
 
 @Service
 @RequiredArgsConstructor
-public class JiraService
+public class JiraWorklogService
 {
     private final RestClient restClient;
 
