@@ -1,4 +1,4 @@
-export type Worklog = {
+type Worklog = {
     issueId: string,
     worklogId: string,
     issueKey: string,
@@ -7,3 +7,5 @@ export type Worklog = {
     end: string,
     worklogComment: string
 }
+
+export default Worklog;

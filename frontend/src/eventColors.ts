@@ -64,6 +64,8 @@ const palette = [
     }
 ];
 
-export function eventColors(event: Event) {
+function eventColors(event: Event) {
     return palette[event.resource.issueId % palette.length];
 }
+
+export default eventColors;
