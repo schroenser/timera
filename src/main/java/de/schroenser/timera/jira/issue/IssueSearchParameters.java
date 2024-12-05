@@ -1,10 +1,10 @@
-package de.schroenser.timera.jira;
+package de.schroenser.timera.jira.issue;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public record IssueSearchParameters(String jql, List<String> fields, int startAt, int maxResults)
+record IssueSearchParameters(String jql, List<String> fields, int startAt, int maxResults)
 {
     private static final DateTimeFormatter JQL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 

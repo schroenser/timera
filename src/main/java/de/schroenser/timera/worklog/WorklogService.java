@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import de.schroenser.timera.jira.JiraIssue;
+import de.schroenser.timera.jira.issue.JiraIssue;
+import de.schroenser.timera.jira.issue.JiraIssueService;
 import de.schroenser.timera.jira.JiraService;
 import de.schroenser.timera.jira.JiraWorklog;
 
@@ -17,13 +18,14 @@ import de.schroenser.timera.jira.JiraWorklog;
 public class WorklogService
 {
     private final JiraService jiraService;
+    private final JiraIssueService jiraIssueService;
 
     public List<Worklog> list(OffsetDateTime start, OffsetDateTime end)
     {
         String currentUserName = jiraService.getCurrentUser()
             .name();
 
-        return jiraService.streamIssues(start)
+        return jiraIssueService.streamIssues(start)
             .flatMap(jiraIssue -> jiraService.listWorklogs(jiraIssue.id(),
                     jiraIssue.fields()
                         .updated())
