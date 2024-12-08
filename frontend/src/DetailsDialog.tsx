@@ -1,6 +1,7 @@
 import {Button, Group, Modal, Space, Text, TextInput} from "@mantine/core";
 import Worklog from "./Worklog";
 import {useCallback, useEffect, useState} from "react";
+import moment from "moment";
 
 type DetailsDialogProps = {
     opened: boolean,
@@ -42,8 +43,8 @@ function DetailsDialog({
     return (
         <Modal opened={opened} onClose={onCancel} size="auto" title="Worklog" centered>
             <Group>
-                <Text>Start: {worklog?.start}</Text>
-                <Text>End: {worklog?.end}</Text>
+                <Text>Start: {moment(worklog?.start).format("DD.MM.YYYY HH:mm")}</Text>
+                <Text>End: {moment(worklog?.end).format("DD.MM.YYYY HH:mm")}</Text>
             </Group>
             <Space h="md"/>
             <Text>Issue: {worklog?.issueKey}: {worklog?.issueSummary}</Text>
