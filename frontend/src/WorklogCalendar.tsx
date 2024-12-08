@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo, useState} from "react";
 import moment from "moment/moment";
 import "moment/locale/de";
-import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, Views} from "react-big-calendar";
+import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, SlotInfo, Views} from "react-big-calendar";
 import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
 import Worklog from "./Worklog";
 import eventColors from "./eventColors";
@@ -26,13 +26,17 @@ function toEvent(worklog: Worklog): Event {
 }
 
 type WorklogCalendarProps = {
-    worklogs: Worklog[], onNavigate: (date: moment.Moment) => void, onWorklogChange: (worklog: Worklog) => void
+    worklogs: Worklog[],
+    onNavigate: (date: moment.Moment) => void,
+    onWorklogChange: (worklog: Worklog) => void,
+    onSelectSlot: (slotInfo: SlotInfo) => void
 }
 
 function WorklogCalendar({
     worklogs,
     onNavigate,
-    onWorklogChange
+    onWorklogChange,
+    onSelectSlot
 }: WorklogCalendarProps) {
     const {
         defaultView,
@@ -40,7 +44,8 @@ function WorklogCalendar({
         step,
         timeslots,
         scrollToTime,
-        dayLayoutAlgorithm
+        dayLayoutAlgorithm,
+        selectable
     } = useMemo(() => (
         {
             defaultView: Views.WORK_WEEK,
@@ -50,7 +55,8 @@ function WorklogCalendar({
             step: 15,
             timeslots: 4,
             scrollToTime: new Date(1970, 0, 1, 7, 0, 0),
-            dayLayoutAlgorithm: "no-overlap" as DayLayoutAlgorithm
+            dayLayoutAlgorithm: "no-overlap" as DayLayoutAlgorithm,
+            selectable: "ignoreEvents" as true | false | "ignoreEvents" | undefined
         }
     ), []);
 
@@ -106,7 +112,9 @@ function WorklogCalendar({
             scrollToTime={scrollToTime}
             dayLayoutAlgorithm={dayLayoutAlgorithm}
             onEventDrop={onEventChange}
-            onEventResize={onEventChange}/>
+            onEventResize={onEventChange}
+            selectable={selectable}
+            onSelectSlot={onSelectSlot}/>
     );
 }
 
