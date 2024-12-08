@@ -52,4 +52,13 @@ public class JiraWorklogService
             .retrieve()
             .body(JiraWorklog.class);
     }
+
+    public void deleteWorklog(String issueId, String worklogId)
+    {
+        restClient.delete()
+            .uri("rest/api/2/issue/{issueId}/worklog/{worklogId}?adjustEstimate=leave", issueId, worklogId)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .toBodilessEntity();
+    }
 }

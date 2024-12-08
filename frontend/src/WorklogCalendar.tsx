@@ -29,14 +29,16 @@ type WorklogCalendarProps = {
     worklogs: Worklog[],
     onNavigate: (date: moment.Moment) => void,
     onWorklogChange: (worklog: Worklog) => void,
-    onSelectSlot: (slotInfo: SlotInfo) => void
+    onSelectSlot: (slotInfo: SlotInfo) => void,
+    onSelectWorklog: (worklog: Worklog) => void
 }
 
 function WorklogCalendar({
     worklogs,
     onNavigate,
     onWorklogChange,
-    onSelectSlot
+    onSelectSlot,
+    onSelectWorklog
 }: WorklogCalendarProps) {
     const {
         defaultView,
@@ -99,6 +101,11 @@ function WorklogCalendar({
         onWorklogChange(modifiedWorklog);
     }, [onWorklogChange]);
 
+    const onSelectEvent = useCallback((event: Event) => {
+        const worklog = event.resource as Worklog;
+        onSelectWorklog(worklog);
+    }, [onSelectWorklog]);
+
     return (
         <DragAndDropCalendar localizer={localizer}
             date={date}
@@ -114,7 +121,8 @@ function WorklogCalendar({
             onEventDrop={onEventChange}
             onEventResize={onEventChange}
             selectable={selectable}
-            onSelectSlot={onSelectSlot}/>
+            onSelectSlot={onSelectSlot}
+            onSelectEvent={onSelectEvent}/>
     );
 }
 

@@ -6,6 +6,7 @@ import "./App.css";
 import {useDisclosure} from "@mantine/hooks";
 import {SlotInfo} from "react-big-calendar";
 import CreateDialog from "./CreateDialog";
+import DetailsDialog from "./DetailsDialog";
 
 async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Worklog[]> {
     const response = await fetch("/api/worklog?" + new URLSearchParams({
@@ -20,7 +21,7 @@ async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Wo
 }
 
 async function createWorklog(worklog: Worklog): Promise<Worklog> {
-    const response = await fetch(`/api/worklog`, {
+    const response = await fetch("/api/worklog", {
         method: "POST",
         body: JSON.stringify(worklog),
         headers: new Headers({
@@ -43,29 +44,19 @@ async function updateWorklog(worklog: Worklog): Promise<Worklog> {
     return await response.json() as Worklog;
 }
 
+async function deleteWorklog(worklog: Worklog): Promise<void> {
+    const response = await fetch(`/api/worklog/${worklog.worklogId}?` + new URLSearchParams({
+        issueId: worklog.issueId
+    }), {
+        method: "DELETE"
+    });
+    if (!response.ok) {
+        throw new Error("Could not delete worklog. HTTP " + response.status + " " + response.statusText);
+    }
+}
+
 function App() {
     const [worklogs, setWorklogs] = useState<Worklog[]>([]);
-
-    const onNavigate = useCallback((date: moment.Moment) => {
-        getWorklogs(moment(date).startOf("week"), moment(date).endOf("week"))
-        .then(setWorklogs);
-    }, [setWorklogs]);
-
-    useEffect(() => {
-        onNavigate(moment());
-    }, [onNavigate]);
-
-    const onWorklogChange = useCallback((worklog: Worklog) => {
-        updateWorklog(worklog)
-        .then(worklog => {
-            setWorklogs((prev) => {
-                const filtered = prev.filter((current) => current.worklogId !== worklog.worklogId);
-                return [
-                    ...filtered, worklog
-                ];
-            });
-        });
-    }, [setWorklogs]);
 
     const [
         createDialogOpened, {
@@ -81,6 +72,20 @@ function App() {
         end: moment()
     });
 
+    const [
+        detailsDialogOpened, {
+            open: detailsDialogOpen,
+            close: detailsDialogClose
+        }
+    ] = useDisclosure(false);
+
+    const [selectedWorklog, setSelectedWorklog] = useState<Worklog>();
+
+    const onNavigate = useCallback((date: moment.Moment) => {
+        getWorklogs(moment(date).startOf("week"), moment(date).endOf("week"))
+        .then(setWorklogs);
+    }, [setWorklogs]);
+
     const onSelectSlot = useCallback((slotInfo: SlotInfo) => {
         setCreateWorklogRange({
             start: moment(slotInfo.start),
@@ -88,6 +93,11 @@ function App() {
         });
         createDialogOpen();
     }, [setCreateWorklogRange, createDialogOpen]);
+
+    const onSelectWorklog = useCallback((worklog: Worklog) => {
+        setSelectedWorklog(worklog);
+        detailsDialogOpen();
+    }, [setSelectedWorklog, detailsDialogOpen]);
 
     const onCreateWorklog = useCallback((worklog: Worklog) => {
         createDialogClose();
@@ -101,16 +111,52 @@ function App() {
         });
     }, [createDialogClose, setWorklogs]);
 
+    const onWorklogChange = useCallback((worklog: Worklog) => {
+        detailsDialogClose();
+        updateWorklog(worklog)
+        .then(worklog => {
+            setWorklogs((prev) => {
+                const filtered = prev.filter((current) => current.worklogId !== worklog.worklogId);
+                return [
+                    ...filtered, worklog
+                ];
+            });
+        });
+    }, [detailsDialogClose, setWorklogs]);
+
+    const onWorklogDelete = useCallback((worklog: Worklog) => {
+        detailsDialogClose();
+        deleteWorklog(worklog)
+        .then(() => {
+            setWorklogs((prev) => {
+                const filtered = prev.filter((current) => current.worklogId !== worklog.worklogId);
+                return [
+                    ...filtered
+                ];
+            });
+        }).catch(console.log);
+    }, [detailsDialogClose, setWorklogs]);
+
+    useEffect(() => {
+        onNavigate(moment());
+    }, [onNavigate]);
+
     return (
         <>
             <WorklogCalendar worklogs={worklogs}
                 onNavigate={onNavigate}
                 onWorklogChange={onWorklogChange}
-                onSelectSlot={onSelectSlot}/>
+                onSelectSlot={onSelectSlot}
+                onSelectWorklog={onSelectWorklog}/>
             <CreateDialog opened={createDialogOpened}
                 onCancel={createDialogClose}
                 onCreate={onCreateWorklog}
                 range={createWorklogRange}/>
+            <DetailsDialog opened={detailsDialogOpened}
+                onCancel={detailsDialogClose}
+                onUpdate={onWorklogChange}
+                onDelete={onWorklogDelete}
+                worklog={selectedWorklog}/>
         </>
     );
 }
