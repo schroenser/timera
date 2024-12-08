@@ -1,12 +1,13 @@
 import React, {useCallback, useMemo, useState} from "react";
 import moment from "moment/moment";
 import "moment/locale/de";
-import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, SlotInfo, Views} from "react-big-calendar";
+import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, SlotInfo, View, Views} from "react-big-calendar";
 import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
 import Worklog from "./Worklog";
 import eventColors from "./eventColors";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import {useLocalStorage} from "@mantine/hooks";
 
 function toEvent(worklog: Worklog): Event {
     let title = "";
@@ -52,6 +53,7 @@ function WorklogCalendar({
         {
             defaultView: Views.WORK_WEEK,
             views: {
+                week: true,
                 work_week: true
             },
             step: 15,
@@ -73,6 +75,8 @@ function WorklogCalendar({
         setDate(date);
         onNavigate(moment(date));
     }, [setDate, onNavigate]);
+
+    const [view, setView] = useLocalStorage<View>({key: "view"});
 
     const eventPropGetter = useCallback((event: Event) => {
         const {
@@ -111,6 +115,8 @@ function WorklogCalendar({
             date={date}
             onNavigate={onNavigateInternal}
             defaultView={defaultView}
+            view={view}
+            onView={setView}
             events={worklogs.map(toEvent)}
             views={views}
             step={step}
