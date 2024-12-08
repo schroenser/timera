@@ -5,7 +5,9 @@ type Worklog = {
     issueSummary: string,
     start: string,
     end: string,
-    worklogComment: string
+    worklogComment: string,
+    issueUrl: string,
+    worklogUrl: string
 }
 
 export default Worklog;

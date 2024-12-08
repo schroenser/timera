@@ -3,8 +3,7 @@ package de.schroenser.timera.worklog;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.schroenser.timera.jira.issue.JiraIssue;
@@ -14,12 +13,24 @@ import de.schroenser.timera.jira.worklog.JiraWorklog;
 import de.schroenser.timera.jira.worklog.JiraWorklogService;
 
 @Service
-@RequiredArgsConstructor
 public class WorklogListService
 {
     private final JiraUserService jiraUserService;
     private final JiraIssueService jiraIssueService;
     private final JiraWorklogService jiraWorklogService;
+    private final String jiraBaseUrl;
+
+    public WorklogListService(
+        JiraUserService jiraUserService,
+        JiraIssueService jiraIssueService,
+        JiraWorklogService jiraWorklogService,
+        @Value("${jira.base-url}") String jiraBaseUrl)
+    {
+        this.jiraUserService = jiraUserService;
+        this.jiraIssueService = jiraIssueService;
+        this.jiraWorklogService = jiraWorklogService;
+        this.jiraBaseUrl = jiraBaseUrl;
+    }
 
     public List<Worklog> list(OffsetDateTime start, OffsetDateTime end)
     {
@@ -41,7 +52,7 @@ public class WorklogListService
             .toList();
     }
 
-    private static boolean isFrom(JiraWorklog jiraWorklog, String currentUserName)
+    private boolean isFrom(JiraWorklog jiraWorklog, String currentUserName)
     {
         return jiraWorklog.author()
             .name()
@@ -51,7 +62,7 @@ public class WorklogListService
                 .equals(currentUserName);
     }
 
-    private static Worklog createWorklog(JiraIssue jiraIssue, JiraWorklog jiraWorklog)
+    private Worklog createWorklog(JiraIssue jiraIssue, JiraWorklog jiraWorklog)
     {
         return new Worklog(jiraIssue.id(),
             jiraWorklog.id(),
@@ -61,6 +72,7 @@ public class WorklogListService
             jiraWorklog.started(),
             jiraWorklog.started()
                 .plusSeconds(jiraWorklog.timeSpentSeconds()),
-            jiraWorklog.comment());
+            jiraWorklog.comment(),
+            jiraBaseUrl);
     }
 }

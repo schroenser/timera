@@ -10,9 +10,9 @@ import de.schroenser.timera.jira.worklog.JiraWorklog;
 @UtilityClass
 class WorklogServices
 {
-    public Worklog applyModification(Worklog worklog, UnaryOperator<JiraWorklog> modifier)
+    public Worklog applyModification(Worklog worklog, UnaryOperator<JiraWorklog> modifier, String jiraBaseUrl)
     {
-        return enhanceJiraWorklog(modifier.apply(extractJiraWorklog(worklog)), worklog);
+        return enhanceJiraWorklog(modifier.apply(extractJiraWorklog(worklog)), worklog, jiraBaseUrl);
     }
 
     private static JiraWorklog extractJiraWorklog(Worklog worklog)
@@ -26,7 +26,7 @@ class WorklogServices
             null);
     }
 
-    private static Worklog enhanceJiraWorklog(JiraWorklog jiraWorklog, Worklog worklog)
+    private static Worklog enhanceJiraWorklog(JiraWorklog jiraWorklog, Worklog worklog, String jiraBaseUrl)
     {
         return new Worklog(worklog.issueId(),
             jiraWorklog.id(),
@@ -35,6 +35,7 @@ class WorklogServices
             jiraWorklog.started(),
             jiraWorklog.started()
                 .plusSeconds(jiraWorklog.timeSpentSeconds()),
-            jiraWorklog.comment());
+            jiraWorklog.comment(),
+            jiraBaseUrl);
     }
 }

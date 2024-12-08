@@ -1,4 +1,4 @@
-import {Button, Group, Modal, Space, Text, TextInput} from "@mantine/core";
+import {Anchor, Button, Group, Modal, Space, Text, TextInput} from "@mantine/core";
 import Worklog from "./Worklog";
 import {useCallback, useEffect, useState} from "react";
 import moment from "moment";
@@ -48,6 +48,11 @@ function DetailsDialog({
             </Group>
             <Space h="md"/>
             <Text>Issue: {worklog?.issueKey}: {worklog?.issueSummary}</Text>
+            <Space h="md"/>
+            <Group justify="center">
+                <Anchor href={worklog?.issueUrl} target="_blank">Issue in Jira</Anchor>
+                <Anchor href={worklog?.worklogUrl} target="_blank">Worklog in Jira</Anchor>
+            </Group>
             <Space h="md"/>
             <TextInput label="Worklog comment"
                 value={worklogComment}
