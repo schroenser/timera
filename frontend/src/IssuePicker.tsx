@@ -50,12 +50,12 @@ function IssuePicker({
         .then(setIssues);
     }, 500);
 
-    useEffect(() => handleSearch(""), []);
+    useEffect(() => handleSearch(""), [handleSearch]);
 
     const onSearchChange = useCallback((searchValue: string) => {
         setSearchValue(searchValue);
         handleSearch(searchValue);
-    }, [setSearchValue, setIssues]);
+    }, [setSearchValue, handleSearch]);
 
     return (
         <Select label="Issue"
