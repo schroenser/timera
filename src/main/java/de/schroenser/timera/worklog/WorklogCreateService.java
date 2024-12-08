@@ -8,13 +8,13 @@ import de.schroenser.timera.jira.worklog.JiraWorklogService;
 
 @Service
 @RequiredArgsConstructor
-public class WorklogUpdateService
+public class WorklogCreateService
 {
     private final JiraWorklogService jiraWorklogService;
 
-    public Worklog update(Worklog worklog)
+    public Worklog create(Worklog worklog)
     {
         return WorklogServices.applyModification(worklog,
-            jiraWorklog -> jiraWorklogService.updateWorklog(worklog.issueId(), worklog.worklogId(), jiraWorklog));
+            jiraWorklog -> jiraWorklogService.createWorklog(worklog.issueId(), jiraWorklog));
     }
 }

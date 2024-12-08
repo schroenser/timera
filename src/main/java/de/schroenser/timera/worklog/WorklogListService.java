@@ -26,7 +26,8 @@ public class WorklogListService
         String currentUserName = jiraUserService.getCurrentUser()
             .name();
 
-        return jiraIssueService.streamIssues(start)
+        return jiraIssueService.getUpdatedIssuesWithWorklogs(start)
+            .stream()
             .flatMap(jiraIssue -> jiraWorklogService.listWorklogs(jiraIssue.id(),
                     jiraIssue.fields()
                         .updated())

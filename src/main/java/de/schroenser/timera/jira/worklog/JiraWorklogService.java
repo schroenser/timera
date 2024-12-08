@@ -31,6 +31,17 @@ public class JiraWorklogService
             .body(WorklogResponse.class);
     }
 
+    public JiraWorklog createWorklog(String issueId, JiraWorklog worklog)
+    {
+        return restClient.post()
+            .uri("rest/api/2/issue/{issueId}/worklog?adjustEstimate=leave", issueId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(worklog)
+            .retrieve()
+            .body(JiraWorklog.class);
+    }
+
     public JiraWorklog updateWorklog(String issueId, String worklogId, JiraWorklog worklog)
     {
         return restClient.put()
