@@ -13,6 +13,16 @@ services:
         environment:
             JIRA_BASE_URL: <https://jira.example.com>
             JIRA_USER_TOKEN: <my_jira_user_token>
+            REDIS_URL: redis://redis:6379
+    redis:
+        image: redis
+        volumes:
+            - redis_data:/data
+        command: redis-server --save 60 1 --loglevel warning
+        restart: unless-stopped
+
+volumes:
+    redis_data:
 ```
 
 ## Updating dependencies
