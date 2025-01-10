@@ -30,7 +30,9 @@ jobs:
       - name: Maven deploy causing Docker deploy
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B -U -DperformRelease=true verify sonar:sonar \
+        run: mvn -B -U -DperformRelease=true \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=schroenser \
-          -Dsonar.projectKey=timera
+          -Dsonar.projectKey=timera \
+          verify \
+          sonar:sonar
