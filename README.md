@@ -1,3 +1,9 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=schroenser_timera&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=schroenser_timera)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=schroenser_timera&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=schroenser_timera)
+
+[![Docker Image Version](https://img.shields.io/docker/v/schroenser/timera)](https://hub.docker.com/repository/docker/schroenser/timera)
+[![Docker Image Size](https://img.shields.io/docker/image-size/schroenser/timera)](https://hub.docker.com/repository/docker/schroenser/timera)
+
 ## Run with docker compose
 
 `docker-compose.yml`:
