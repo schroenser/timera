@@ -19,7 +19,7 @@ function CreateDialog({
         start,
         end
     }
-}: CreateDialogProps) {
+}: Readonly<CreateDialogProps>) {
     const [issue, setIssue] = useState<Issue | undefined>();
     const [worklogComment, setWorklogComment] = useState<string>("");
 

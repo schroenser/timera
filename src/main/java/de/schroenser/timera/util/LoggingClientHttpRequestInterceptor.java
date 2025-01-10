@@ -20,7 +20,7 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
     {
         logRequest(request, body);
         var response = execution.execute(request, body);
-        logResponse(request, response);
+        logResponse(response);
         return response;
     }
 
@@ -34,7 +34,7 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
         }
     }
 
-    private void logResponse(HttpRequest request, ClientHttpResponse response) throws IOException
+    private void logResponse(ClientHttpResponse response) throws IOException
     {
         log.info("Response status: {}", response.getStatusCode());
         logHeaders("Response", response.getHeaders());

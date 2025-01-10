@@ -27,9 +27,7 @@ class CacheConfiguration
             valueSerializationPair
             = RedisSerializationContext.SerializationPair.fromSerializer(serializer);
 
-        return redisCacheManagerBuilder -> {
-            redisCacheManagerBuilder.cacheDefaults(redisCacheManagerBuilder.cacheDefaults()
-                .serializeValuesWith(valueSerializationPair));
-        };
+        return redisCacheManagerBuilder -> redisCacheManagerBuilder.cacheDefaults(redisCacheManagerBuilder.cacheDefaults()
+            .serializeValuesWith(valueSerializationPair));
     }
 }
