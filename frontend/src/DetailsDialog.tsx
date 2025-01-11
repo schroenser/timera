@@ -17,7 +17,7 @@ function DetailsDialog({
     onUpdate,
     onDelete,
     worklog
-}: DetailsDialogProps) {
+}: Readonly<DetailsDialogProps>) {
     const [worklogComment, setWorklogComment] = useState<string>("");
 
     useEffect(() => {

@@ -19,13 +19,11 @@ class WrapperGenericJackson2JsonRedisSerializer extends GenericJackson2JsonRedis
     {
         var tempValue = value;
 
-        if (value != null)
-        {
-            if (Modifier.isFinal(value.getClass()
+        if (value != null &&
+            Modifier.isFinal(value.getClass()
                 .getModifiers()))
-            {
-                tempValue = new Wrapper(value);
-            }
+        {
+            tempValue = new Wrapper(value);
         }
 
         return super.serialize(tempValue);
@@ -36,9 +34,9 @@ class WrapperGenericJackson2JsonRedisSerializer extends GenericJackson2JsonRedis
     {
         var value = super.deserialize(source);
 
-        if (value instanceof Wrapper)
+        if (value instanceof Wrapper wrapper)
         {
-            return ((Wrapper) value).getValue();
+            return wrapper.getValue();
         }
         else
         {

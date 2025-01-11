@@ -28,7 +28,7 @@ function toComboBoxItem(issue: Issue): { label: string; value: string } {
 function IssuePicker({
     issue,
     onChange
-}: IssuePickerProps) {
+}: Readonly<IssuePickerProps>) {
     const [issues, setIssues] = useState<Issue[]>([]);
 
     const comboBoxItems = useMemo(() => issues.map(toComboBoxItem), [issues]);

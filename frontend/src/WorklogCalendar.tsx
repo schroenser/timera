@@ -40,7 +40,7 @@ function WorklogCalendar({
     onWorklogChange,
     onSelectSlot,
     onSelectWorklog
-}: WorklogCalendarProps) {
+}: Readonly<WorklogCalendarProps>) {
     const {
         defaultView,
         views,
