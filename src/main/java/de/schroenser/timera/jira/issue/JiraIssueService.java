@@ -9,9 +9,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
