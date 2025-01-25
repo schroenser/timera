@@ -18,7 +18,6 @@ public class JiraUserService
     {
         return restClient.get()
             .uri("rest/auth/1/session")
-            .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .body(JiraCurrentUser.class);
     }

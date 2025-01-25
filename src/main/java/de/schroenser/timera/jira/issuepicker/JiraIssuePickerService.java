@@ -18,7 +18,6 @@ public class JiraIssuePickerService
     {
         return restClient.get()
             .uri("rest/api/2/issue/picker?query={query}", query)
-            .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .body(JiraIssuePickerResult.class)
             .sections()

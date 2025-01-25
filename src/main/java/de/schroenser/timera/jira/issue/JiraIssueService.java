@@ -17,7 +17,6 @@ import org.springframework.web.client.RestClient;
 
 import de.schroenser.timera.jira.paged.PagedResponseSpliterator;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JiraIssueService
@@ -62,8 +61,6 @@ public class JiraIssueService
             jql = jql + "text ~ '" + query + "'";
         }
 
-        log.info("JQL: {}", jql);
-
         var issueSearchParameters = new IssueSearchParameters(jql, 0, 19);
 
         return performPageSearch(issueSearchParameters).issues();
@@ -81,8 +78,6 @@ public class JiraIssueService
     {
         return restClient.post()
             .uri("rest/api/2/search")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
             .body(issueSearchParameters)
             .retrieve()
             .body(IssueResponse.class);
