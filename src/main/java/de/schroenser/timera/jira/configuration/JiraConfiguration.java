@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClient;
 
@@ -32,7 +33,9 @@ class JiraConfiguration
                 c.add(new MappingJackson2HttpMessageConverter(objectMapper));
             })
             .defaultHeader("User-Agent", "Timera/1.0 (Sven Haberer - DDS)")
-            .defaultHeader("Authorization", "Bearer " + jiraProperties.token());
+            .defaultHeader("Authorization", "Bearer " + jiraProperties.token())
+            .defaultHeader("Accept", MediaType.APPLICATION_JSON.toString())
+            .defaultHeader("Content-Type", MediaType.APPLICATION_JSON.toString());
         if (jiraProperties.logRequests())
         {
             builder = builder.requestInterceptor(new LoggingClientHttpRequestInterceptor());

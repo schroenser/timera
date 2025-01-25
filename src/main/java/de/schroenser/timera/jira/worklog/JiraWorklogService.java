@@ -26,7 +26,6 @@ public class JiraWorklogService
     {
         return restClient.get()
             .uri("rest/api/2/issue/{issueId}/worklog", issueId)
-            .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .body(WorklogResponse.class);
     }
@@ -35,8 +34,6 @@ public class JiraWorklogService
     {
         return restClient.post()
             .uri("rest/api/2/issue/{issueId}/worklog?adjustEstimate=leave", issueId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
             .body(worklog)
             .retrieve()
             .body(JiraWorklog.class);
@@ -46,8 +43,6 @@ public class JiraWorklogService
     {
         return restClient.put()
             .uri("rest/api/2/issue/{issueId}/worklog/{worklogId}?adjustEstimate=leave", issueId, worklogId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
             .body(worklog)
             .retrieve()
             .body(JiraWorklog.class);
