@@ -8,7 +8,7 @@ import Issue from "./Issue";
 type CreateDialogProps = {
     opened: boolean, onCancel: () => void, onCreate: (worklog: Worklog) => void, range: {
         start: moment.Moment; end: moment.Moment;
-    }
+    }, recentIssues: Issue[]
 }
 
 function CreateDialog({
@@ -18,9 +18,11 @@ function CreateDialog({
     range: {
         start,
         end
-    }
+    },
+    recentIssues
 }: Readonly<CreateDialogProps>) {
     const [issue, setIssue] = useState<Issue | undefined>();
+
     const [worklogComment, setWorklogComment] = useState<string>("");
 
     const onCloseInternal = useCallback(() => {
@@ -54,7 +56,7 @@ function CreateDialog({
                 <Text>End: {end.format("DD.MM.YYYY HH:mm")}</Text>
             </Group>
             <Space h="md"/>
-            <IssuePicker issue={issue} onChange={setIssue}/>
+            <IssuePicker issue={issue} recentIssues={recentIssues} onChange={setIssue}/>
             <Space h="md"/>
             <TextInput label="Worklog comment"
                 value={worklogComment}

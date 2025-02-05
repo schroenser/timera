@@ -3,10 +3,13 @@ import moment from "moment";
 import Worklog from "./Worklog";
 import WorklogCalendar from "./WorklogCalendar";
 import "./App.css";
-import {useDisclosure} from "@mantine/hooks";
+import {useDisclosure, useLocalStorage} from "@mantine/hooks";
 import {SlotInfo} from "react-big-calendar";
 import CreateDialog from "./CreateDialog";
 import DetailsDialog from "./DetailsDialog";
+import Issue from "./Issue";
+
+const recentIssuesMaxLength = 20;
 
 async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Worklog[]> {
     const response = await fetch("/api/worklog?" + new URLSearchParams({
@@ -57,6 +60,10 @@ async function deleteWorklog(worklog: Worklog): Promise<void> {
 
 function App() {
     const [worklogs, setWorklogs] = useState<Worklog[]>([]);
+    const [recentIssues, setRecentIssues] = useLocalStorage<Issue[]>({
+        key: "recentIssues",
+        defaultValue: []
+    });
 
     const [
         createDialogOpened, {
@@ -108,8 +115,19 @@ function App() {
                     ...prev, worklog
                 ];
             });
+            setRecentIssues((prev) => {
+                const filtered = prev.filter((current) => current.id !== worklog.issueId);
+                const trimmed = filtered.slice(0, recentIssuesMaxLength - 1);
+                return [
+                    {
+                        id: worklog.issueId,
+                        key: worklog.issueKey,
+                        summary: worklog.issueSummary
+                    }, ...trimmed
+                ];
+            });
         });
-    }, [createDialogClose, setWorklogs]);
+    }, [createDialogClose, setWorklogs, setRecentIssues]);
 
     const onWorklogChange = useCallback((worklog: Worklog) => {
         detailsDialogClose();
@@ -121,8 +139,19 @@ function App() {
                     ...filtered, worklog
                 ];
             });
+            setRecentIssues((prev) => {
+                const filtered = prev.filter((current) => current.id !== worklog.issueId);
+                const trimmed = filtered.slice(0, recentIssuesMaxLength - 1);
+                return [
+                    {
+                        id: worklog.issueId,
+                        key: worklog.issueKey,
+                        summary: worklog.issueSummary
+                    }, ...trimmed
+                ];
+            });
         });
-    }, [detailsDialogClose, setWorklogs]);
+    }, [detailsDialogClose, setWorklogs, setRecentIssues]);
 
     const onWorklogDelete = useCallback((worklog: Worklog) => {
         detailsDialogClose();
@@ -134,8 +163,19 @@ function App() {
                     ...filtered
                 ];
             });
+            setRecentIssues((prev) => {
+                const filtered = prev.filter((current) => current.id !== worklog.issueId);
+                const trimmed = filtered.slice(0, recentIssuesMaxLength - 1);
+                return [
+                    {
+                        id: worklog.issueId,
+                        key: worklog.issueKey,
+                        summary: worklog.issueSummary
+                    }, ...trimmed
+                ];
+            });
         }).catch(console.log);
-    }, [detailsDialogClose, setWorklogs]);
+    }, [detailsDialogClose, setWorklogs, setRecentIssues]);
 
     useEffect(() => {
         onNavigate(moment());
@@ -151,7 +191,8 @@ function App() {
             <CreateDialog opened={createDialogOpened}
                 onCancel={createDialogClose}
                 onCreate={onCreateWorklog}
-                range={createWorklogRange}/>
+                range={createWorklogRange}
+                recentIssues={recentIssues}/>
             <DetailsDialog opened={detailsDialogOpened}
                 onCancel={detailsDialogClose}
                 onUpdate={onWorklogChange}

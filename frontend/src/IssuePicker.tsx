@@ -16,11 +16,12 @@ async function getIssuePickerIssues(query: string): Promise<Issue[]> {
 }
 
 type IssuePickerProps = {
-    issue: Issue | undefined, onChange: (issue: Issue | undefined) => void
+    issue: Issue | undefined, recentIssues: Issue[], onChange: (issue: Issue | undefined) => void
 }
 
 function IssuePicker({
     issue,
+    recentIssues,
     onChange
 }: Readonly<IssuePickerProps>) {
     const combobox = useCombobox({
@@ -29,7 +30,7 @@ function IssuePicker({
         }
     });
 
-    const [issues, setIssues] = useState<Issue[]>([]);
+    const [issues, setIssues] = useState<Issue[]>(recentIssues);
 
     const onOptionSubmit = useCallback((issueId: string) => {
         if (issueId) {
@@ -41,9 +42,9 @@ function IssuePicker({
             setSearchValue("");
             onChange(undefined);
         }
-        setIssues([]);
+        setIssues(recentIssues);
         combobox.closeDropdown();
-    }, [issues, onChange, combobox]);
+    }, [issues, onChange, recentIssues, combobox]);
 
     const [searchValue, setSearchValue] = useState(issue ? issue.key + ": " + issue.summary : "");
 
@@ -74,7 +75,7 @@ function IssuePicker({
                     onBlur={() => {
                         combobox.closeDropdown();
                         setSearchValue(issue ? issue.key + ": " + issue.summary : "");
-                        setIssues([]);
+                        setIssues(recentIssues);
                     }}
                     value={searchValue}
                     onChange={(event) => {
