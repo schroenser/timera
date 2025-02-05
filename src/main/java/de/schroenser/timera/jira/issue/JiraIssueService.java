@@ -5,22 +5,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import de.schroenser.timera.jira.paged.PagedResponseSpliterator;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JiraIssueService
 {
     private static final DateTimeFormatter JQL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final Pattern ISSUE_KEY_PATTERN = Pattern.compile("[A-Z]{2,}-\\d+");
+    private static final Pattern ISSUE_KEY_PATTERN = Pattern.compile("[A-Za-z]{2,}-\\d+");
 
     private final RestClient restClient;
 
@@ -33,35 +34,32 @@ public class JiraIssueService
         return performSearch(jql);
     }
 
-    public List<JiraIssue> getIssuesForIssuePicker(List<String> issueKeys, String query)
+    public List<JiraIssue> getIssuesForIssuePicker(String query)
     {
-        if (ISSUE_KEY_PATTERN.matcher(query)
+        var escapedQuery = query.replace("\"", "\\\"");
+
+        String jql = null;
+
+        if (ISSUE_KEY_PATTERN.matcher(escapedQuery)
             .matches())
         {
-            issueKeys = Stream.concat(issueKeys.stream(), Stream.of(query))
-                .toList();
+            jql = "key = " + escapedQuery;
         }
-
-        var jql = "";
-
-        if (!issueKeys.isEmpty())
+        else if (!escapedQuery.isEmpty())
         {
-            jql = jql + "key in (" + String.join(",", issueKeys) + ")";
+            jql = "text ~ \"" + escapedQuery + "\"";
         }
 
-        if (!issueKeys.isEmpty() && !query.isEmpty())
+        List<JiraIssue> issues = List.of();
+
+        if (jql != null)
         {
-            jql = jql + " or ";
+            var issueSearchParameters = new IssueSearchParameters(jql, 0, 19);
+            issues = performPageSearch(issueSearchParameters).issues();
+            log.info("`{}` yielded {} results", jql, issues.size());
         }
 
-        if (!query.isEmpty())
-        {
-            jql = jql + "text ~ '" + query + "'";
-        }
-
-        var issueSearchParameters = new IssueSearchParameters(jql, 0, 19);
-
-        return performPageSearch(issueSearchParameters).issues();
+        return issues;
     }
 
     private List<JiraIssue> performSearch(String jql)

@@ -1,7 +1,8 @@
-import {ComboboxItem, Select} from "@mantine/core";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {Combobox, InputBase, useCombobox} from "@mantine/core";
+import {useCallback, useMemo, useState} from "react";
 import Issue from "./Issue";
 import {useDebouncedCallback} from "@mantine/hooks";
+import "@mantine/core/styles/Combobox.css";
 
 async function getIssuePickerIssues(query: string): Promise<Issue[]> {
     const response = await fetch("/api/issuepicker?" + new URLSearchParams({
@@ -18,53 +19,76 @@ type IssuePickerProps = {
     issue: Issue | undefined, onChange: (issue: Issue | undefined) => void
 }
 
-function toComboBoxItem(issue: Issue): { label: string; value: string } {
-    return {
-        value: issue.id,
-        label: issue.key + ": " + issue.summary
-    };
-}
-
 function IssuePicker({
     issue,
     onChange
 }: Readonly<IssuePickerProps>) {
+    const combobox = useCombobox({
+        onDropdownClose: () => {
+            combobox.resetSelectedOption();
+        }
+    });
+
     const [issues, setIssues] = useState<Issue[]>([]);
 
-    const comboBoxItems = useMemo(() => issues.map(toComboBoxItem), [issues]);
-    const value = useMemo(() => issue ? toComboBoxItem(issue) : undefined, [issue]);
-
-    const onValueChange = useCallback((_value: string | null, option: ComboboxItem) => {
-        if (option) {
-            issues.filter(issue => issue.id === option.value).forEach(onChange);
+    const onOptionSubmit = useCallback((issueId: string) => {
+        if (issueId) {
+            issues.filter(issue => issue.id === issueId).forEach(issue => {
+                setSearchValue(issue.key + ": " + issue.summary);
+                onChange(issue);
+            });
         } else {
+            setSearchValue("");
             onChange(undefined);
         }
+        setIssues([]);
+        combobox.closeDropdown();
+    }, [issues, onChange, combobox]);
 
-    }, [issues, onChange]);
-
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState(issue ? issue.key + ": " + issue.summary : "");
 
     const handleSearch = useDebouncedCallback((searchValue: string) => {
         getIssuePickerIssues(searchValue)
         .then(setIssues);
     }, 500);
 
-    useEffect(() => handleSearch(""), [handleSearch]);
-
     const onSearchChange = useCallback((searchValue: string) => {
         setSearchValue(searchValue);
         handleSearch(searchValue);
-    }, [setSearchValue, handleSearch]);
+    }, [handleSearch]);
+
+    const options = useMemo(() => issues.map((issue) => (
+        <Combobox.Option value={issue.id} key={issue.id}>
+            {issue.key}: {issue.summary}
+        </Combobox.Option>
+    )), [issues]);
 
     return (
-        <Select label="Issue"
-            data={comboBoxItems}
-            value={value?.value}
-            onChange={onValueChange}
-            searchable
-            searchValue={searchValue}
-            onSearchChange={onSearchChange}/>
+        <Combobox store={combobox} onOptionSubmit={onOptionSubmit}>
+            <Combobox.Target>
+                <InputBase label="Issue"
+                    rightSection={<Combobox.Chevron/>}
+                    rightSectionPointerEvents="none"
+                    onClick={() => combobox.openDropdown()}
+                    onFocus={() => combobox.openDropdown()}
+                    onBlur={() => {
+                        combobox.closeDropdown();
+                        setSearchValue(issue ? issue.key + ": " + issue.summary : "");
+                        setIssues([]);
+                    }}
+                    value={searchValue}
+                    onChange={(event) => {
+                        combobox.updateSelectedOptionIndex();
+                        onSearchChange(event.currentTarget.value);
+                    }}/>
+            </Combobox.Target>
+
+            <Combobox.Dropdown>
+                <Combobox.Options>
+                    {options.length > 0 ? options : <Combobox.Empty>Nothing found</Combobox.Empty>}
+                </Combobox.Options>
+            </Combobox.Dropdown>
+        </Combobox>
     );
 }
 

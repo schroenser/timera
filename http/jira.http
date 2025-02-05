@@ -37,7 +37,9 @@ Content-Type: application/json
     "timeSpentSeconds": 3600
 }
 
-> {% client.global.set("worklogId", response.body.id); %}
+> {%
+    client.global.set("worklogId", response.body.id);
+%}
 
 ### Update worklog
 PUT {{baseUrl}}/rest/api/2/issue/{{issueId}}/worklog/{{worklogId}}?adjustEstimate=leave
@@ -53,10 +55,5 @@ Content-Type: application/json
 
 ### Delete worklog
 DELETE {{baseUrl}}/rest/api/2/issue/{{issueId}}/worklog/{{worklogId}}?adjustEstimate=leave
-User-Agent: IntelliJ (Sven Haberer - DDS)
-Authorization: Bearer {{userToken}}
-
-### Get issue picker resource
-GET {{baseUrl}}/rest/api/2/issue/picker?query=erech
 User-Agent: IntelliJ (Sven Haberer - DDS)
 Authorization: Bearer {{userToken}}
