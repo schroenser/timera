@@ -8,14 +8,13 @@ import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import de.schroenser.timera.jira.paged.PagedResponseSpliterator;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JiraIssueService
@@ -56,7 +55,6 @@ public class JiraIssueService
         {
             var issueSearchParameters = new IssueSearchParameters(jql, 0, 19);
             issues = performPageSearch(issueSearchParameters).issues();
-            log.info("`{}` yielded {} results", jql, issues.size());
         }
 
         return issues;
@@ -72,10 +70,27 @@ public class JiraIssueService
 
     private IssueResponse performPageSearch(IssueSearchParameters issueSearchParameters)
     {
-        return restClient.post()
+        RestClient.ResponseSpec retrieve = restClient.post()
             .uri("rest/api/2/search")
             .body(issueSearchParameters)
-            .retrieve()
-            .body(IssueResponse.class);
+            .retrieve();
+        IssueResponse body;
+        try
+        {
+            body = retrieve.body(IssueResponse.class);
+        }
+        catch (HttpClientErrorException.BadRequest e)
+        {
+            if (e.getMessage()
+                .contains("400 Bad Request: \"{\"errorMessages\":[\"An issue with key '"))
+            {
+                body = new IssueResponse(0, 0, 0, List.of());
+            }
+            else
+            {
+                throw e;
+            }
+        }
+        return body;
     }
 }
