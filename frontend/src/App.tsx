@@ -88,9 +88,15 @@ function App() {
 
     const [selectedWorklog, setSelectedWorklog] = useState<Worklog>();
 
+    const [loading, setLoading] = useState(false);
+
     const onNavigate = useCallback((date: moment.Moment) => {
+        setLoading(true);
         getWorklogs(moment(date).startOf("week"), moment(date).endOf("week"))
-        .then(setWorklogs);
+        .then(worklogs => {
+            setWorklogs(worklogs);
+            setLoading(false);
+        });
     }, [setWorklogs]);
 
     const onSelectSlot = useCallback((slotInfo: SlotInfo) => {
@@ -108,6 +114,7 @@ function App() {
 
     const onCreateWorklog = useCallback((worklog: Worklog) => {
         createDialogClose();
+        setLoading(true);
         createWorklog(worklog)
         .then(worklog => {
             setWorklogs((prev) => {
@@ -126,11 +133,13 @@ function App() {
                     }, ...trimmed
                 ];
             });
+            setLoading(false);
         });
     }, [createDialogClose, setWorklogs, setRecentIssues]);
 
     const onWorklogChange = useCallback((worklog: Worklog) => {
         detailsDialogClose();
+        setLoading(true);
         updateWorklog(worklog)
         .then(worklog => {
             setWorklogs((prev) => {
@@ -150,11 +159,13 @@ function App() {
                     }, ...trimmed
                 ];
             });
+            setLoading(false);
         });
     }, [detailsDialogClose, setWorklogs, setRecentIssues]);
 
     const onWorklogDelete = useCallback((worklog: Worklog) => {
         detailsDialogClose();
+        setLoading(true);
         deleteWorklog(worklog)
         .then(() => {
             setWorklogs((prev) => {
@@ -174,6 +185,7 @@ function App() {
                     }, ...trimmed
                 ];
             });
+            setLoading(false);
         }).catch(console.log);
     }, [detailsDialogClose, setWorklogs, setRecentIssues]);
 
@@ -183,11 +195,13 @@ function App() {
 
     return (
         <>
+            <span className={loading ? "loading" : ""}>
             <WorklogCalendar worklogs={worklogs}
                 onNavigate={onNavigate}
                 onWorklogChange={onWorklogChange}
                 onSelectSlot={onSelectSlot}
                 onSelectWorklog={onSelectWorklog}/>
+            </span>
             <CreateDialog opened={createDialogOpened}
                 onCancel={createDialogClose}
                 onCreate={onCreateWorklog}
