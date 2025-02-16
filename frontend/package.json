@@ -48,7 +48,7 @@
     "proxy": "http://localhost:8080",
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "postcss": "^8.4.49",
+        "postcss": "^8.5.2",
         "postcss-preset-mantine": "^1.17.0",
         "postcss-simple-vars": "^7.0.1"
     }
