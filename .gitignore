@@ -1,7 +1,0 @@
-﻿.idea/*
-!.idea/codeStyles
-!.idea/codeStyles/*
-*.iml
-target
-/http/http-client.private.env.json
-/src/main/resources/application-local.yaml
