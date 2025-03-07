@@ -20,7 +20,7 @@
     <properties>
         <amps.version>9.1.1</amps.version>
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
-        <atlassian.spring.scanner.version>2.2.4</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
         <jira.version>9.12.2</jira.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.10</version>
+                <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -304,6 +304,26 @@
                                         <ignoreVersion>
                                             <type>regex</type>
                                             <version>.*</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.atlassian.plugin</groupId>
+                                    <artifactId>atlassian-spring-scanner-annotation</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>[5.0.0,)</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.atlassian.plugin</groupId>
+                                    <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>[5.0.0,)</version>
                                         </ignoreVersion>
                                     </ignoreVersions>
                                 </rule>
