@@ -3,4 +3,6 @@
 !.idea/codeStyles/*
 *.iml
 
+node
+node_modules
 target

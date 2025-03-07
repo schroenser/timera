@@ -1,0 +1,10 @@
+<html>
+    <head>
+        <title>Timera</title>
+        <meta name="decorator" content="atl.general">
+        $webResourceManager.requireResource("de.schroenser.timera.timera:entrypoint-timera")
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+</html>

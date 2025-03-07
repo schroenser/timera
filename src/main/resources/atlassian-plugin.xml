@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <atlassian-plugin name="${project.name}" key="${atlassian.plugin.key}" plugins-version="2">
+
     <plugin-info>
         <description>${project.description}</description>
         <param name="plugin-icon">images/timera.png</param>
@@ -10,15 +12,15 @@
     <!-- add our i18n resource -->
     <resource name="i18n" location="timera" type="i18n" />
 
-    <!-- add our web resources -->
-    <web-resource name="timera Web Resources" key="timera-resources">
-        <context>timera</context>
+    <servlet name="Timera Servlet" key="timera-servlet" class="de.schroenser.timera.TimeraServlet">
+        <url-pattern>/timera</url-pattern>
+    </servlet>
 
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource name="timera.js" location="/js/timera.js" type="download" />
-        <resource name="images/" location="/images" type="download" />
+    <web-item name="Timera Page Item" key="timera-page-item" section="system.top.navigation.bar" weight="1000">
+        <label key="timera-page-item.label" />
+        <link linkId="timera-page-item-link">/plugins/servlet/timera</link>
+    </web-item>
 
-        <resource name="timera.css" location="/css/timera.css" type="download" />
-    </web-resource>
+    <rest name="Timera REST API" key="timera-rest-api" path="/timera" version="1.0" />
 
 </atlassian-plugin>

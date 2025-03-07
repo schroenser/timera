@@ -24,6 +24,7 @@
         <jira.version>9.12.2</jira.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <platform.version>6.1.14</platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -33,61 +34,31 @@
                 <groupId>com.atlassian.jira</groupId>
                 <artifactId>jira-api</artifactId>
                 <version>${jira.version}</version>
-                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>platform</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>third-party</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.atlassian.plugin</groupId>
                 <artifactId>atlassian-spring-scanner-annotation</artifactId>
                 <version>${atlassian.spring.scanner.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.atlassian.plugins</groupId>
-                <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
-                <version>2.0.9</version>
-                <scope>test</scope>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.36</version>
             </dependency>
-            <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>jsr311-api</artifactId>
-                <version>1.1.1</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- Add dependency on jira-core if you want access to JIRA implementation classes as well as the sanctioned API. -->
-            <!-- This is not normally recommended, but may be required eg when migrating a plugin originally developed against JIRA 4.x -->
-            <!--
-            <dependency>
-                <groupId>com.atlassian.jira</groupId>
-                <artifactId>jira-core</artifactId>
-                <version>${jira.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            -->
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
-            <!-- You can read more about TestKit at https://developer.atlassian.com/display/JIRADEV/Plugin+Tutorial+-+Smarter+integration+testing+with+TestKit -->
-            <!--
-            <dependency>
-                <groupId>com.atlassian.jira.tests</groupId>
-                <artifactId>jira-testkit-client</artifactId>
-                <version>${testkit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            -->
         </dependencies>
     </dependencyManagement>
 
@@ -95,26 +66,37 @@
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atlassian.plugin</groupId>
             <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.atlassian.plugins</groupId>
-            <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
+            <groupId>com.atlassian.plugins.rest</groupId>
+            <artifactId>atlassian-rest-common</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -143,22 +125,20 @@
 
                             <!-- Ensure plugin is spring powered -->
                             <Spring-Context>*</Spring-Context>
+
+                            <Atlassian-Scan-Folders>META-INF/plugin-descriptors</Atlassian-Scan-Folders>
                         </instructions>
-                        <!-- Uncomment to install TestKit backdoor in JIRA. -->
-                        <!--
-                        <pluginArtifacts>
-                            <pluginArtifact>
-                                <groupId>com.atlassian.jira.tests</groupId>
-                                <artifactId>jira-testkit-plugin</artifactId>
-                                <version>${testkit.version}</version>
-                            </pluginArtifact>
-                        </pluginArtifacts>
-                        -->
+
                         <productDataVersion>${jira.version}</productDataVersion>
 
                         <!-- See here for an explanation of default instructions: -->
                         <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                         <productVersion>${jira.version}</productVersion>
+
+                        <includedFeModuleManifests>
+                            <includedFeModuleManifest>package.json</includedFeModuleManifest>
+                            <includedFeModuleManifest>package-lock.json</includedFeModuleManifest>
+                        </includedFeModuleManifests>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -174,6 +154,43 @@
                                 <goal>atlassian-spring-scanner</goal>
                             </goals>
                             <phase>process-classes</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>1.15.1</version>
+                    <configuration>
+                        <installDirectory>node</installDirectory>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <configuration>
+                                <nodeVersion>v22.11.0</nodeVersion>
+                                <npmVersion>10.9.0</npmVersion>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                        </execution>
+                        <execution>
+                            <id>npm build</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>compile</phase>
+                            <configuration>
+                                <arguments>run build</arguments>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -280,6 +297,10 @@
                             </ignoreVersion>
                             <ignoreVersion>
                                 <type>regex</type>
+                                <version>(?i).*\W(?:atlassian)\W*.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
                                 <version>(?i).*\W(?:bdad23b)\W*.*</version>
                             </ignoreVersion>
                             <ignoreVersion>
@@ -354,6 +375,10 @@
                 <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
                 <artifactId>sortpom-maven-plugin</artifactId>
             </plugin>
@@ -367,4 +392,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>frontend-watch</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.eirslett</groupId>
+                            <artifactId>frontend-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>npm build</id>
+                                    <goals>
+                                        <goal>npm</goal>
+                                    </goals>
+                                    <phase>compile</phase>
+                                    <configuration>
+                                        <arguments>run watch:prepare</arguments>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
