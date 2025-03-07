@@ -1,8 +1,8 @@
 <atlassian-plugin name="${project.name}" key="${atlassian.plugin.key}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="plugin-icon">images/timera.png</param>
+        <param name="plugin-logo">images/timera.png</param>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
         <version>${project.version}</version>
     </plugin-info>
