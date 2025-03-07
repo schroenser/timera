@@ -1,24 +1,24 @@
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+<atlassian-plugin name="${project.name}" key="${atlassian.plugin.key}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <version>${project.version}</version>
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="timera"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="timera-resources" name="timera Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="timera.css" location="/css/timera.css"/>
-        <resource type="download" name="timera.js" location="/js/timera.js"/>
-        <resource type="download" name="images/" location="/images"/>
+    <resource name="i18n" location="timera" type="i18n" />
 
+    <!-- add our web resources -->
+    <web-resource name="timera Web Resources" key="timera-resources">
         <context>timera</context>
+
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource name="timera.js" location="/js/timera.js" type="download" />
+        <resource name="images/" location="/images" type="download" />
+
+        <resource name="timera.css" location="/css/timera.css" type="download" />
     </web-resource>
-    
+
 </atlassian-plugin>

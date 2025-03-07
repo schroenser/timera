@@ -1,5 +1,6 @@
 package de.schroenser.timera.api;
 
-public interface MyPluginComponent {
+public interface MyPluginComponent
+{
     String getName();
 }
