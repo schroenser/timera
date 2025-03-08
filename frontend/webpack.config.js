@@ -1,12 +1,13 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WrmPlugin = require('atlassian-webresource-webpack-plugin');
 const path = require('path');
 
 module.exports = {
     mode: 'development',
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'build'),
+        path: path.resolve(__dirname, 'build/frontend'),
         filename: 'bundle.js'
     },
     module: {
@@ -37,8 +38,7 @@ module.exports = {
         proxy: [
             {
                 context: ['/api'],
-                target: 'http://localhost:8080',
-            },
-        ]
+                target: 'http://localhost:8080'
+            }]
     }
 };

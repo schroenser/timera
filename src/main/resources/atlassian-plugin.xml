@@ -1,4 +1,5 @@
 <atlassian-plugin name="${project.name}" key="${atlassian.plugin.key}" plugins-version="2">
+
     <plugin-info>
         <description>${project.description}</description>
         <param name="plugin-icon">images/timera.png</param>
@@ -9,16 +10,5 @@
 
     <!-- add our i18n resource -->
     <resource name="i18n" location="timera" type="i18n" />
-
-    <!-- add our web resources -->
-    <web-resource name="timera Web Resources" key="timera-resources">
-        <context>timera</context>
-
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource name="timera.js" location="/js/timera.js" type="download" />
-        <resource name="images/" location="/images" type="download" />
-
-        <resource name="timera.css" location="/css/timera.css" type="download" />
-    </web-resource>
 
 </atlassian-plugin>
