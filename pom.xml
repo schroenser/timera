@@ -143,6 +143,7 @@
 
                             <!-- Ensure plugin is spring powered -->
                             <Spring-Context>*</Spring-Context>
+                            <Atlassian-Scan-Folders>META-INF/plugin-descriptors</Atlassian-Scan-Folders>
                         </instructions>
                         <!-- Uncomment to install TestKit backdoor in JIRA. -->
                         <!--
@@ -159,6 +160,10 @@
                         <!-- See here for an explanation of default instructions: -->
                         <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                         <productVersion>${jira.version}</productVersion>
+                        <includedFeModuleManifests>
+                            <includedFeModuleManifest>frontend/package.json</includedFeModuleManifest>
+                            <includedFeModuleManifest>frontend/package-lock.json</includedFeModuleManifest>
+                        </includedFeModuleManifests>
                     </configuration>
                 </plugin>
                 <plugin>

@@ -5,10 +5,12 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.tsx',
+    entry: {
+        'timera': './src/index.tsx'
+    },
     output: {
-        path: path.resolve(__dirname, 'build/frontend'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, 'build'),
+        filename: 'bundled.[name].js'
     },
     module: {
         rules: [
@@ -28,6 +30,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'public/index.html',
             favicon: 'public/timera.ico'
+        }), new WrmPlugin({
+            pluginKey: 'de.schroenser.timera.timera',
+            xmlDescriptors: path.resolve('build', 'META-INF', 'plugin-descriptors', 'wr-defs.xml')
         })],
     devServer: {
         host: 'localhost',
