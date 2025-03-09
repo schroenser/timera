@@ -1,9 +1,24 @@
 const path = require('path');
-const WrmPlugin = require('atlassian-webresource-webpack-plugin');
+const {merge} = require('webpack-merge');
+const webpack = require('webpack');
+const os = require('os');
+const WRMPlugin = require('atlassian-webresource-webpack-plugin');
 
 const PLUGIN_TARGET_DIR = path.join(__dirname, 'target');
 const SRC_DIR = path.join(__dirname, 'src', 'main', 'typescript');
 const OUTPUT_PATH = path.join(PLUGIN_TARGET_DIR, 'classes');
+
+const getWrmPlugin = (watch = false, watchPrepare = false) => {
+    return new WRMPlugin({
+        pluginKey: 'de.schroenser.timera.timera',
+        xmlDescriptors: path.resolve(OUTPUT_PATH, 'META-INF', 'plugin-descriptors', 'wr-webpack-bundles.xml'),
+        contextMap: {
+            timera: ['atl.general']
+        },
+        watch: watch,
+        watchPrepare: watchPrepare
+    });
+};
 
 const webpackConfig = {
     mode: 'development',
@@ -27,15 +42,52 @@ const webpackConfig = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
-    },
-    plugins: [
-        new WrmPlugin({
-            pluginKey: 'de.schroenser.timera.timera',
-            xmlDescriptors: path.resolve(OUTPUT_PATH, 'META-INF', 'plugin-descriptors', 'wr-webpack-bundles.xml'),
-            contextMap: {
-                timera: ['atl.general']
-            }
-        })]
+    }
 };
 
-module.exports = webpackConfig;
+const hostname = os.hostname();
+const devServerPort = '3333';
+
+const watchPrepareConfig = {
+    output: {
+        publicPath: `http://${hostname}:${devServerPort}/`,
+        filename: '[name].js'
+    },
+    plugins: [
+        getWrmPlugin(true, true)]
+};
+
+const watchConfig = {
+    output: {
+        publicPath: `http://${hostname}:${devServerPort}/`,
+        filename: '[name].js'
+    },
+    devServer: {
+        host: hostname,
+        port: devServerPort,
+        hot: true,
+        headers: {'Access-Control-Allow-Origin': '*'}
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(), getWrmPlugin(true)]
+};
+
+const devConfig = {
+    plugins: [
+        getWrmPlugin()]
+};
+
+module.exports = (env) => {
+    if (env['watch:prepare']) {
+        const mergedWebpackConfig = merge(webpackConfig, watchPrepareConfig);
+        return mergedWebpackConfig;
+    }
+
+    if (env['watch']) {
+        const mergedWebpackConfig = merge(webpackConfig, watchConfig);
+        return mergedWebpackConfig;
+    }
+
+    const mergedWebpackConfig = merge(webpackConfig, devConfig);
+    return mergedWebpackConfig;
+};

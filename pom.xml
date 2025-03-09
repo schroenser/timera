@@ -419,4 +419,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>frontend-watch</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.eirslett</groupId>
+                            <artifactId>frontend-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>npm build</id>
+                                    <goals>
+                                        <goal>npm</goal>
+                                    </goals>
+                                    <phase>compile</phase>
+                                    <configuration>
+                                        <arguments>run watch:prepare</arguments>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
