@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <atlassian-plugin name="${project.name}" key="${atlassian.plugin.key}" plugins-version="2">
 
     <plugin-info>
@@ -11,8 +12,13 @@
     <!-- add our i18n resource -->
     <resource name="i18n" location="timera" type="i18n" />
 
-    <web-panel key="timera-webpanel" location="atl.jira.view.issue.right.context" weight="10">
-        <resource name="view" type="velocity" location="webpanel.vm"/>
+    <web-item name="timera-page-item" key="timera-page-item" section="system.top.navigation.bar" weight="1000">
+        <label key="timera-page-item.label" />
+        <link linkId="timera-page-item-link">/projects/${pathEncodedProjectKey}?selectedItem=${atlassian.plugin.key}:timera-page</link>
+    </web-item>
+
+    <web-panel name="timera-page" key="timera-page" location="${atlassian.plugin.key}:timera-page" weight="1000">
+        <resource name="view" type="velocity" location="templates/timera.vm" />
     </web-panel>
 
 </atlassian-plugin>
