@@ -11,4 +11,8 @@
     <!-- add our i18n resource -->
     <resource name="i18n" location="timera" type="i18n" />
 
+    <web-panel key="timera-webpanel" location="atl.jira.view.issue.right.context" weight="10">
+        <resource name="view" type="velocity" location="webpanel.vm"/>
+    </web-panel>
+
 </atlassian-plugin>
