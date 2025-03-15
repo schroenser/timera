@@ -1,4 +1,13 @@
 body {
     margin: 0;
     font-family: sans-serif;
+    overflow-y: visible;
+}
+
+#root {
+    height: calc(100vh - 41px);
+}
+
+#footer {
+    display: none;
 }

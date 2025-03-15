@@ -1,5 +1,5 @@
 .rbc-timeslot-group {
-    min-height: calc(100vh / 9);
+    min-height: calc((100vh - 41px - 43.5px - 20.5px) / 9);
 }
 
 .rbc-allday-cell {
