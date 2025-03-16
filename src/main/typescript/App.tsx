@@ -49,9 +49,7 @@ async function updateWorklog(worklog: Worklog): Promise<Worklog> {
 }
 
 async function deleteWorklog(worklog: Worklog): Promise<void> {
-    const response = await fetch(baseUrl + `/rest/timera/1.0/worklog/${worklog.worklogId}?` + new URLSearchParams({
-        issueId: worklog.issueId.toString()
-    }), {
+    const response = await fetch(baseUrl + `/rest/timera/1.0/worklog/${worklog.worklogId}`, {
         method: "DELETE"
     });
     if (!response.ok) {

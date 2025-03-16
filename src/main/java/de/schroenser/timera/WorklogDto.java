@@ -12,14 +12,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @XmlRootElement
-public class Issue
+public class WorklogDto
 {
     @XmlElement
-    private long id;
+    private long issueId;
 
     @XmlElement
-    private String key;
+    private long worklogId;
 
     @XmlElement
-    private String summary;
+    private String issueKey;
+
+    @XmlElement
+    private String issueSummary;
+
+    @XmlElement
+    private String start;
+
+    @XmlElement
+    private String end;
+
+    @XmlElement
+    private String worklogComment;
 }

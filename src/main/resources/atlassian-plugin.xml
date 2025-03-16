@@ -16,7 +16,7 @@
         <url-pattern>/timera</url-pattern>
     </servlet>
 
-    <web-item name="Timera Page Item" key="timera-page-item" section="system.top.navigation.bar" weight="1000">
+    <web-item name="Timera Page Item" key="timera-page-item" section="system.user.options/personal" weight="1000">
         <label key="timera-page-item.label" />
         <link linkId="timera-page-item-link">/plugins/servlet/timera</link>
     </web-item>

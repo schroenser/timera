@@ -1,12 +1,14 @@
 package de.schroenser.timera;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+import com.atlassian.jira.issue.Issue;
+
+@Component
 class IssueMapper
 {
-    public Issue fromJiraIssue(com.atlassian.jira.issue.Issue jiraIssue)
+    public IssueDto toDto(Issue pojo)
     {
-        return new Issue(jiraIssue.getId(), jiraIssue.getKey(), jiraIssue.getSummary());
+        return new IssueDto(pojo.getId(), pojo.getKey(), pojo.getSummary());
     }
 }

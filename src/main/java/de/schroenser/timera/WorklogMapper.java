@@ -6,50 +6,48 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import com.atlassian.jira.bc.issue.worklog.WorklogInputParameters;
 import com.atlassian.jira.bc.issue.worklog.WorklogInputParametersImpl;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.worklog.Worklog;
 
-@Slf4j
-@UtilityClass
+@Component
 class WorklogMapper
 {
-    public WorklogInputParameters toWorklogInputParameters(com.atlassian.jira.issue.Issue issue, Worklog worklog)
+    public WorklogInputParameters toInputParameters(WorklogDto dto, Issue issue)
     {
-        OffsetDateTime start = OffsetDateTime.parse(worklog.getStart());
-        OffsetDateTime end = OffsetDateTime.parse(worklog.getEnd());
+        OffsetDateTime start = OffsetDateTime.parse(dto.getStart());
+        OffsetDateTime end = OffsetDateTime.parse(dto.getEnd());
         long timeSpent = start.until(end, ChronoUnit.MINUTES);
         Date startDate = Date.from(start.toInstant());
         String timeSpentString = String.valueOf(timeSpent);
         return WorklogInputParametersImpl.builder()
             .issue(issue)
-            .worklogId(worklog.getWorklogId())
+            .worklogId(dto.getWorklogId())
             .startDate(startDate)
             .timeSpent(timeSpentString)
-            .comment(worklog.getWorklogComment())
+            .comment(dto.getWorklogComment())
             .build();
     }
 
-    public Worklog fromJiraWorklog(com.atlassian.jira.issue.worklog.Worklog jiraWorklog)
+    public WorklogDto toDto(Worklog pojo)
     {
-        Date startDate = jiraWorklog.getStartDate();
-        long timeSpent = jiraWorklog.getTimeSpent();
+        Date startDate = pojo.getStartDate();
+        long timeSpent = pojo.getTimeSpent();
         OffsetDateTime start = startDate.toInstant()
             .atOffset(ZoneOffset.UTC);
         OffsetDateTime end = start.plusSeconds(timeSpent);
-        String startString = start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        String endString = end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return new Worklog(jiraWorklog.getIssue()
+        return new WorklogDto(pojo.getIssue()
             .getId(),
-            jiraWorklog.getId(),
-            jiraWorklog.getIssue()
+            pojo.getId(),
+            pojo.getIssue()
                 .getKey(),
-            jiraWorklog.getIssue()
+            pojo.getIssue()
                 .getSummary(),
-            startString,
-            endString,
-            jiraWorklog.getComment());
+            start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+            end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+            pojo.getComment());
     }
 }
