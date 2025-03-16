@@ -1,30 +1,77 @@
-.rbc-timeslot-group {
-    min-height: calc((100vh - 41px - 43.5px - 20.5px) / 9);
-}
+#root {
+    .rbc-timeslot-group {
+        min-height: calc((100vh - 41px - 43.5px - 20.5px) / 9);
+    }
 
-.rbc-allday-cell {
-    display: none;
-}
-
-.rbc-event {
-    container-type: size;
-}
-
-@container (max-height: 60px) {
-    .rbc-event .rbc-event-label {
+    .rbc-allday-cell {
         display: none;
     }
-}
 
-.loading .rbc-toolbar:after {
-    content: "";
-    width: 100vw;
-    height: 10px;
-    margin-bottom: -10px;
-    display: flex;
-    background: linear-gradient(90deg, #0001 33%, #0005 50%, #0001 66%) #f2f2f2;
-    background-size: 300% 100%;
-    animation: l1 1s infinite linear;
+    .rbc-button-link {
+        pointer-events: none;
+    }
+
+    .rbc-event {
+        container-type: size;
+    }
+
+    @container (max-height: 60px) {
+        .rbc-event .rbc-event-label {
+            display: none;
+        }
+    }
+
+    .rbc-toolbar {
+        padding: 0.5em;
+        margin-bottom: unset;
+
+        .rbc-toolbar-label {
+            cursor: default;
+        }
+
+        button {
+            box-sizing: border-box;
+            transition: background-color .1s ease-out;
+            border-radius: 3.01px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-variant: normal;
+            font-weight: 400;
+            background-image: none;
+            background-color: rgba(9, 30, 66, 0.08);
+            border: 1px solid transparent;
+            color: #344563;
+            display: inline-block;
+            height: 2.14285714em;
+            line-height: 1.42857143em;
+            margin: 0;
+            padding: 4px 10px;
+            vertical-align: initial;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: rgba(9, 30, 66, 0.13);
+            color: #344563;
+        }
+
+        button.rbc-active {
+            background-color: #344563;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        button + button {
+            margin-left: 4px;
+        }
+    }
+
+    .loading .rbc-toolbar {
+        background: linear-gradient(90deg, #0001 33%, #0005 50%, #0001 66%) #f2f2f2;
+        background-size: 300% 100%;
+        animation: l1 1s infinite linear;
+    }
 }
 
 @keyframes l1 {
