@@ -1,38 +1,16 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=schroenser_timera&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=schroenser_timera)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=schroenser_timera&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=schroenser_timera)
+## Maven commands
 
-[![Docker Image Version](https://img.shields.io/docker/v/schroenser/timera)](https://hub.docker.com/repository/docker/schroenser/timera)
-[![Docker Image Size](https://img.shields.io/docker/image-size/schroenser/timera)](https://hub.docker.com/repository/docker/schroenser/timera)
+* `atlas-mvn clean` cleans the `target` folder
+* `atlas-mvn package` packages the application.
+  If the product is running, the plugin is automatically refreshed.
+* `atlas-mvn sortpom:sort` sorts the pom file automatically.
+* `atlas-mvn versions:display-plugin-updates` shows available version updates for the maven plugins.
+* `atlas-mvn versions:display-dependency-updates` shows available version updates for the maven dependencies.
 
-## Run with docker compose
+## Atlas commands
 
-`docker-compose.yml`:
+* `atlas-run` installs this plugin into the product and starts it on localhost
+* `atlas-debug` same as atlas-run, but allows a debugger to attach at port 5005
+* `atlas-help` prints description for all commands in the SDK
 
-```yaml
-version: "3.8"
-services:
-    timera:
-        image: schroenser/timera:latest
-        ports:
-            - 8080:8080
-        restart: unless-stopped
-        environment:
-            JIRA_BASE_URL: <https://jira.example.com>
-            JIRA_USER_TOKEN: <my_jira_user_token>
-            REDIS_URL: redis://redis:6379
-    redis:
-        image: redis
-        volumes:
-            - redis_data:/data
-        command: redis-server --save 60 1 --loglevel warning
-        restart: unless-stopped
-
-volumes:
-    redis_data:
-```
-
-## Updating dependencies
-
-1. Determine applicable dependency updates using the following commands:
-    1. `mvn versions:display-plugin-updates` for plugins
-    2. `mvn versions:display-dependency-updates`
+Full documentation: https://developer.atlassian.com/display/DOCS/Introduction+to+the+Atlassian+Plugin+SDK

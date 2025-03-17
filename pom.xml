@@ -1,56 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
-        <relativePath />
-    </parent>
-
     <groupId>de.schroenser.timera</groupId>
     <artifactId>timera</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
-    <prerequisites>
-        <!--
-            This Maven version is used for versions:display-plugin-updates only. Maven does not check this value during
-            the build. For that, refer to the maven enforcer plugin configuration.
+    <packaging>atlassian-plugin</packaging>
 
-            See http://jira.codehaus.org/browse/MVERSIONS-272 for more details.
-        -->
-        <maven>${maven.version.minimum}</maven>
-    </prerequisites>
+    <name>Timera</name>
+    <description>Worklogs like they should be.</description>
+
+    <organization>
+        <name>schroenser</name>
+        <url>https://github.com/schroenser/timera</url>
+    </organization>
 
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.version.minimum>3.6.3</maven.version.minimum>
+        <amps.version>9.1.1</amps.version>
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
+        <jira.version>9.12.2</jira.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <platform.version>6.1.14</platform.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.atlassian.jira</groupId>
+                <artifactId>jira-api</artifactId>
+                <version>${jira.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>platform</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>third-party</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-annotation</artifactId>
+                <version>${atlassian.spring.scanner.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.36</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins.rest</groupId>
+            <artifactId>atlassian-rest-common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -58,12 +109,65 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.atlassian.maven.plugins</groupId>
+                    <artifactId>jira-maven-plugin</artifactId>
+                    <version>${amps.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <allowGoogleTracking>false</allowGoogleTracking>
+                        <enableQuickReload>true</enableQuickReload>
+                        <instructions>
+                            <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+
+                            <!-- Add package to export here -->
+                            <Export-Package>de.schroenser.timera.api,</Export-Package>
+
+                            <!-- Add package import here -->
+                            <Import-Package>org.springframework.osgi.*;resolution:="optional",
+                                org.eclipse.gemini.blueprint.*;resolution:="optional",
+                                *
+                            </Import-Package>
+
+                            <!-- Ensure plugin is spring powered -->
+                            <Spring-Context>*</Spring-Context>
+
+                            <Atlassian-Scan-Folders>META-INF/plugin-descriptors</Atlassian-Scan-Folders>
+                        </instructions>
+
+                        <productDataVersion>${jira.version}</productDataVersion>
+
+                        <!-- See here for an explanation of default instructions: -->
+                        <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
+                        <productVersion>${jira.version}</productVersion>
+
+                        <includedFeModuleManifests>
+                            <includedFeModuleManifest>package.json</includedFeModuleManifest>
+                            <includedFeModuleManifest>package-lock.json</includedFeModuleManifest>
+                        </includedFeModuleManifests>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.atlassian.plugin</groupId>
+                    <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                    <version>${atlassian.spring.scanner.version}</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>atlassian-spring-scanner</goal>
+                            </goals>
+                            <phase>process-classes</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
                     <version>1.15.1</version>
                     <configuration>
-                        <installDirectory>target</installDirectory>
-                        <workingDirectory>frontend</workingDirectory>
+                        <installDirectory>node</installDirectory>
                     </configuration>
                     <executions>
                         <execution>
@@ -98,7 +202,7 @@
                 <plugin>
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
@@ -122,111 +226,44 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>com.google.cloud.tools</groupId>
-                    <artifactId>jib-maven-plugin</artifactId>
-                    <version>3.4.4</version>
-                    <configuration>
-                        <from>
-                            <!-- https://hub.docker.com/layers/library/eclipse-temurin/21-jre-alpine/images/sha256-008d50b2730a72e475bfdfe651149d68180dc2689b808afb8b0bc669b3262a59?context=explore -->
-                            <image>eclipse-temurin:21-jre-alpine</image>
-                        </from>
-                        <to>
-                            <image>docker.io/schroenser/${project.artifactId}</image>
-                            <tags>
-                                <tag>latest</tag>
-                                <!--suppress UnresolvedMavenProperty / This variable is created by the gmavenplus-plugin. -->
-                                <tag>${image.tag}</tag>
-                            </tags>
-                        </to>
-                        <container>
-                            <ports>
-                                <port>8080</port>
-                            </ports>
-                        </container>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>build</id>
-                            <goals>
-                                <goal>build</goal>
-                            </goals>
-                            <phase>deploy</phase>
-                        </execution>
-                    </executions>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>io.github.git-commit-id</groupId>
-                    <artifactId>git-commit-id-maven-plugin</artifactId>
-                    <version>9.0.1</version>
-                    <configuration>
-                        <includeOnlyProperties>
-                            <includeOnlyProperty>^git\.branch$</includeOnlyProperty>
-                            <includeOnlyProperty>^git\.build\.time$</includeOnlyProperty>
-                            <includeOnlyProperty>^git\.commit\.id$</includeOnlyProperty>
-                            <includeOnlyProperty>^git\.dirty$</includeOnlyProperty>
-                        </includeOnlyProperties>
-
-                        <!-- Set a format suitable for inclusion in an image tag -->
-                        <dateFormat>yyyyMMdd-HHmmss</dateFormat>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>determine-git-state</id>
-                            <goals>
-                                <goal>revision</goal>
-                            </goals>
-                            <phase>validate</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>default-deploy</id>
-                            <phase>none</phase>
-                        </execution>
-                    </executions>
+                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.5.0</version>
                     <executions>
                         <execution>
-                            <id>default-install</id>
-                            <phase>none</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>default-jar</id>
-                            <phase>none</phase>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.6.3</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.1.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.3.1</version>
-                    <executions>
-                        <execution>
-                            <id>copy-resources</id>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <phase>process-classes</phase>
-                            <configuration>
-                                <outputDirectory>${basedir}/target/classes/static</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>frontend/build</directory>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -235,7 +272,7 @@
                     <configuration>
                         <toolchains>
                             <jdk>
-                                <version>${java.version}</version>
+                                <version>${maven.compiler.target}</version>
                             </jdk>
                         </toolchains>
                     </configuration>
@@ -244,46 +281,6 @@
                             <goals>
                                 <goal>toolchain</goal>
                             </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.gmavenplus</groupId>
-                    <artifactId>gmavenplus-plugin</artifactId>
-                    <version>4.1.1</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.codehaus.groovy</groupId>
-                            <artifactId>groovy-ant</artifactId>
-                            <version>3.0.23</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>determine-container-tag</id>
-                            <goals>
-                                <goal>execute</goal>
-                            </goals>
-                            <phase>initialize</phase>
-                            <configuration>
-                                <scripts>
-                                    <?SORTPOM IGNORE?>
-                                    <script><![CDATA[
-                                                def properties = project.properties
-
-                                                def imageTag = properties.getProperty('git.commit.id')
-
-                                                if (properties.getProperty('git.dirty') == 'true') {
-                                                    imageTag += '-dirty-' + properties.getProperty('git.build.time')
-                                                }
-
-                                                properties.setProperty('image.tag', imageTag)
-                                                log.info("Image tag: ${imageTag}")
-                                                ]]></script>
-                                    <?SORTPOM RESUME?>
-                                </scripts>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -299,6 +296,74 @@
                                 <type>regex</type>
                                 <version>(?i).*\W(?:beta)\W*.*</version>
                             </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).*\W(?:m\d+)\W*.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).*\W(?:atlassian)\W*.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).*\W(?:bdad23b)\W*.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).*\W(?:PFD)\W*.*</version>
+                            </ignoreVersion>
+                            <rules>
+                                <rule>
+                                    <groupId>com.atlassian.jira</groupId>
+                                    <artifactId>jira-api</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>(,${jira.version}),(${jira.version},)</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.atlassian.maven.plugins</groupId>
+                                    <artifactId>jira-maven-plugin</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>regex</type>
+                                            <version>.*</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.atlassian.plugin</groupId>
+                                    <artifactId>atlassian-spring-scanner-annotation</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>[5.0.0,)</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.atlassian.plugin</groupId>
+                                    <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>[5.0.0,)</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                                <rule>
+                                    <groupId>com.github.ekryd.sortpom</groupId>
+                                    <artifactId>sortpom-maven-plugin</artifactId>
+                                    <ignoreVersions>
+                                        <ignoreVersion>
+                                            <type>range</type>
+                                            <version>(3.0.1,)</version>
+                                        </ignoreVersion>
+                                    </ignoreVersions>
+                                </rule>
+                            </rules>
                         </ruleSet>
                     </configuration>
                 </plugin>
@@ -306,6 +371,14 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>jira-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -315,22 +388,41 @@
                 <artifactId>sortpom-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>io.github.git-commit-id</groupId>
-                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-toolchains-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>frontend-watch</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.eirslett</groupId>
+                            <artifactId>frontend-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>npm build</id>
+                                    <goals>
+                                        <goal>npm</goal>
+                                    </goals>
+                                    <phase>compile</phase>
+                                    <configuration>
+                                        <arguments>run watch:prepare</arguments>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
