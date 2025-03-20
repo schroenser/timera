@@ -22,7 +22,7 @@ class WorklogMapper
         OffsetDateTime end = OffsetDateTime.parse(dto.getEnd());
         long timeSpent = start.until(end, ChronoUnit.MINUTES);
         Date startDate = Date.from(start.toInstant());
-        String timeSpentString = String.valueOf(timeSpent);
+        String timeSpentString = timeSpent + "m";
         return WorklogInputParametersImpl.builder()
             .issue(issue)
             .worklogId(dto.getWorklogId())
