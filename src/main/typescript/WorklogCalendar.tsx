@@ -76,7 +76,8 @@ function WorklogCalendar({
             defaultView: Views.WORK_WEEK,
             views: {
                 week: true,
-                work_week: true
+                work_week: true,
+                month: true
             },
             step: 15,
             timeslots: 4,
