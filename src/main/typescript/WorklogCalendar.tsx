@@ -1,13 +1,34 @@
 import React, {useCallback, useMemo, useState} from "react";
 import moment from "moment/moment";
 import "moment/locale/de";
-import {Calendar, DayLayoutAlgorithm, Event, momentLocalizer, SlotInfo, View, Views} from "react-big-calendar";
+import {
+    Calendar, DayLayoutAlgorithm, Event, Messages, momentLocalizer, SlotInfo, View, Views
+} from "react-big-calendar";
 import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
 import Worklog from "./Worklog";
 import eventColors from "./eventColors";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import {useLocalStorage} from "@mantine/hooks";
+
+const userLocale = document.getElementsByTagName("meta")["ajs-user-locale"].getAttribute("content");
+
+const lang = {
+    en: null,
+    "en-GB": null,
+    "de_DE": {
+        week: "Woche",
+        work_week: "Arbeitswoche",
+        day: "Tag",
+        month: "Monat",
+        previous: "Zurück",
+        next: "Weiter",
+        today: "Heute",
+        agenda: "Agenda",
+
+        showMore: (total) => `+${total} weitere`
+    }
+};
 
 function toEvent(worklog: Worklog): Event {
     let title = "";
@@ -48,7 +69,8 @@ function WorklogCalendar({
         timeslots,
         scrollToTime,
         dayLayoutAlgorithm,
-        selectable
+        selectable,
+        messages
     } = useMemo(() => (
         {
             defaultView: Views.WORK_WEEK,
@@ -60,13 +82,14 @@ function WorklogCalendar({
             timeslots: 4,
             scrollToTime: new Date(1970, 0, 1, 7, 0, 0),
             dayLayoutAlgorithm: "no-overlap" as DayLayoutAlgorithm,
-            selectable: "ignoreEvents" as true | false | "ignoreEvents" | undefined
+            selectable: "ignoreEvents" as true | false | "ignoreEvents" | undefined,
+            messages: lang[userLocale] as Messages
         }
     ), []);
 
     const DragAndDropCalendar = withDragAndDrop(Calendar);
 
-    moment.locale("de");
+    moment.locale(userLocale);
     const localizer = momentLocalizer(moment);
 
     const [date, setDate] = useState<Date>(new Date());
@@ -127,6 +150,7 @@ function WorklogCalendar({
             onEventDrop={onEventChange}
             onEventResize={onEventChange}
             selectable={selectable}
+            messages={messages}
             onSelectSlot={onSelectSlot}
             onSelectEvent={onSelectEvent}/>
     );

@@ -45,8 +45,8 @@ function DetailsDialog({
     return (
         <Modal opened={opened} onClose={onCancel} size="auto" title="Worklog" centered>
             <Group>
-                <Text>Start: {moment(worklog?.start).format("DD.MM.YYYY HH:mm")}</Text>
-                <Text>End: {moment(worklog?.end).format("DD.MM.YYYY HH:mm")}</Text>
+                <Text>Start: {moment(worklog?.start).format("lll")}</Text>
+                <Text>End: {moment(worklog?.end).format("lll")}</Text>
             </Group>
             <Space h="md"/>
             <Text>Issue: {worklog?.issueKey}: {worklog?.issueSummary}</Text>
