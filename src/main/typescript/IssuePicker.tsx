@@ -14,7 +14,14 @@ async function getIssuePickerIssues(query: string): Promise<Issue[]> {
             "Accept": "application/json; charset=UTF-8"
         })
     });
-    return await response.json() as Issue[];
+    if (response.ok) {
+        return await response.json() as Issue[];
+    }
+    throw new Error("Error fetching issues for issue picker. HTTP " +
+        response.status +
+        " (" +
+        response.statusText +
+        ")");
 }
 
 type IssuePickerProps = {

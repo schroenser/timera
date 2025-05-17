@@ -21,7 +21,10 @@ async function getWorklogs(start: moment.Moment, end: moment.Moment): Promise<Wo
             "Accept": "application/json; charset=UTF-8"
         })
     });
-    return await response.json() as Worklog[];
+    if (response.ok) {
+        return await response.json() as Worklog[];
+    }
+    throw new Error("Could not get worklogs. HTTP " + response.status + " (" + response.statusText + ")");
 }
 
 async function createWorklog(worklog: Worklog): Promise<Worklog> {
@@ -33,7 +36,10 @@ async function createWorklog(worklog: Worklog): Promise<Worklog> {
             "Accept": "application/json; charset=UTF-8"
         })
     });
-    return await response.json() as Worklog;
+    if (response.ok) {
+        return await response.json() as Worklog;
+    }
+    throw new Error("Could not create worklog. HTTP " + response.status + " (" + response.statusText + ")");
 }
 
 async function updateWorklog(worklog: Worklog): Promise<Worklog> {
@@ -45,7 +51,10 @@ async function updateWorklog(worklog: Worklog): Promise<Worklog> {
             "Accept": "application/json; charset=UTF-8"
         })
     });
-    return await response.json() as Worklog;
+    if (response.ok) {
+        return await response.json() as Worklog;
+    }
+    throw new Error("Could not update worklog. HTTP " + response.status + " (" + response.statusText + ")");
 }
 
 async function deleteWorklog(worklog: Worklog): Promise<void> {
@@ -53,7 +62,7 @@ async function deleteWorklog(worklog: Worklog): Promise<void> {
         method: "DELETE"
     });
     if (!response.ok) {
-        throw new Error("Could not delete worklog. HTTP " + response.status + " " + response.statusText);
+        throw new Error("Could not delete worklog. HTTP " + response.status + " (" + response.statusText + ")");
     }
 }
 
