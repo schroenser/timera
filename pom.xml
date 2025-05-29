@@ -202,7 +202,7 @@
                 <plugin>
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>4.0.0</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
