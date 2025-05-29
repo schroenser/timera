@@ -13,6 +13,9 @@ updates:
       maven-dependencies:
         patterns:
           - "*"
+        ignore:
+          - dependency-name: "com.github.ekryd.sortpom:sortpom-maven-plugin"
+            versions: [ ">3.0.1" ]
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
