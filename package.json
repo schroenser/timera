@@ -1,7 +1,7 @@
 {
     "name": "frontend",
     "dependencies": {
-        "@mantine/core": "^8.3.5",
+        "@mantine/core": "^8.3.6",
         "@mantine/hooks": "^8.0.1",
         "moment": "^2.30.1",
         "react": "^19.2.0",
